@@ -24,45 +24,45 @@ class WebParser:
                                  stats_map['Trailing P/E'],
                                  stats_map['Forward P/E'],
                                  stats_map['PEG Ratio (5 yr expected)'],
-                                 stats_map['Price/Sales (ttm)'],
-                                 stats_map['Price/Book (mrq)'],
+                                 stats_map['Price/Sales'],
+                                 stats_map['Price/Book'],
                                  stats_map['Enterprise Value/Revenue'],
                                  stats_map['Enterprise Value/EBITDA'])
 
 
     def get_profitability(self, stats_map):
         return Profitability(stats_map['Profit Margin'],
-                             stats_map['Operating Margin (ttm)'])
+                             stats_map['Operating Margin'])
 
 
     def get_mgmt_effectiveness(self, stats_map):
-        return MgmtEffectiveness(stats_map['Return on Assets (ttm)'],
-                                 stats_map['Return on Equity (ttm)'])
+        return MgmtEffectiveness(stats_map['Return on Assets'],
+                                 stats_map['Return on Equity'])
 
 
     def get_income_stmt(self, stats_map):
-        return IncomeStatement(stats_map['Revenue (ttm)'],
-                               stats_map['Revenue Per Share (ttm)'],
-                               stats_map['Quarterly Revenue Growth (yoy)'],
-                               stats_map['Gross Profit (ttm)'],
+        return IncomeStatement(stats_map['Revenue'],
+                               stats_map['Revenue Per Share'],
+                               stats_map['Quarterly Revenue Growth'],
+                               stats_map['Gross Profit'],
                                stats_map['EBITDA'],
-                               stats_map['Net Income Avi to Common (ttm)'],
-                               stats_map['Diluted EPS (ttm)'],
-                               stats_map['Quarterly Earnings Growth (yoy)'])
+                               stats_map['Net Income Avi to Common'],
+                               stats_map['Diluted EPS'],
+                               stats_map['Quarterly Earnings Growth'])
 
 
     def get_balance_sheet(self, stats_map):
-        return BalanceSheet(stats_map['Total Cash (mrq)'],
-                            stats_map['Total Cash Per Share (mrq)'],
-                            stats_map['Total Debt (mrq)'],
-                            stats_map['Total Debt/Equity (mrq)'],
-                            stats_map['Current Ratio (mrq)'],
-                            stats_map['Book Value Per Share (mrq)'])
+        return BalanceSheet(stats_map['Total Cash'],
+                            stats_map['Total Cash Per Share'],
+                            stats_map['Total Debt'],
+                            stats_map['Total Debt/Equity'],
+                            stats_map['Current Ratio'],
+                            stats_map['Book Value Per Share'])
 
 
     def get_cash_flow_stmt(self, stats_map):
-        return CashFlowStmt(stats_map['Operating Cash Flow (ttm)'],
-                            stats_map['Levered Free Cash Flow (ttm)'])
+        return CashFlowStmt(stats_map['Operating Cash Flow'],
+                            stats_map['Levered Free Cash Flow'])
 
 
     def get_stock_price_history(self, stats_map):

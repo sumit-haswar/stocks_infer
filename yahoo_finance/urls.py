@@ -1,6 +1,6 @@
-
+from config import *
 
 class Urls:
-    summary = "https://finance.yahoo.com/quote/{0}"
-    key_statistics = "https://finance.yahoo.com/quote/{0}/key-statistics"
+    summary = config['yahoo_finance']['summary-url']
+    key_statistics = config['yahoo_finance']['key-statistics-url']
 

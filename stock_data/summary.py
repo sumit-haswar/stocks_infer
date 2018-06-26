@@ -18,7 +18,7 @@ class Summary:
         self.beta = parse_float(beta)
         self.pe_ratio_ttm = parse_float(pe_ratio_ttm)
         self.eps_ttm = parse_float(eps_ttm)
-        self.earning_date = parse(earning_date)
+        self.earning_date = earning_date
         self.frwd_div_and_yield = frwd_div_and_yield
-        self.ex_div_date = parse(ex_div_date)
+        self.ex_div_date = ex_div_date
         self.one_yr_target = parse_float(one_yr_target)

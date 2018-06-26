@@ -1,0 +1,10 @@
+{
+  "yahoo_finance":{
+    "summary-url": "https://finance.yahoo.com/quote/{0}",
+    "key-statistics-url": "https://finance.yahoo.com/quote/{0}/key-statistics"
+  },
+  "postgresql":{
+    "host": "localhost",
+    "database": "stockinfer"
+  }
+}

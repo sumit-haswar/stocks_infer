@@ -1,3 +1,5 @@
+from util import *
+
 class ShareStats:
 
     def __init__(self, avg_vol_3_day, avg_vol_10_day, shares_outstanding,
@@ -7,6 +9,6 @@ class ShareStats:
         self.shares_outstanding = shares_outstanding
         self.shares_float = shares_float
         self.shares_short = shares_short
-        self.short_ratio = float(short_ratio)
+        self.short_ratio = parse_float(short_ratio)
         self.short_pc_of_float = short_pc_of_float
         self.shares_short_prior_month = shares_short_prior_month

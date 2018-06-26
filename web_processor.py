@@ -12,12 +12,6 @@ class WebProcessor:
         page = requests.get(url)
         return html.fromstring(page.content).xpath("/html/body")[0]
 
-
-    # def get_element_by_id(self, url, id):
-    #     page = requests.get(url)
-    #     div = html.fromstring(page.content).xpath(f'//*[@id="{id}"]')
-    #     return div[0]
-
     def get_element_by_id(self, htmlElement, id):
         elements = htmlElement.xpath(f'//*[@id="{id}"]')
         return elements[0]
