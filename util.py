@@ -6,6 +6,7 @@ def get_number_from_currency(val):
     :param val: example: "23.4B" "10.5B" or "12000"
     :return: float/int representation of "23.4M"
     """
+    float()
     fl_val = re.findall("\d+\.\d+", val)[0]
     factor = 1;
     suffix = next((i for i in val if i.isalpha()), '')

@@ -1,4 +1,4 @@
-from util import *
+from util import parse_float
 
 class ValuationMeasures:
 

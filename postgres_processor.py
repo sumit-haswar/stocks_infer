@@ -11,8 +11,8 @@ class PostgresProcessor:
 
     def insert_stock_data(self, symbol, name, json_data):
 
-        sql = "INSERT INTO stock_data (date_added_utc, symbol, name, data) " \
-              "VALUES (%(date_added_utc)s, %(symbol)s, %(name)s, %(data)s)"
+        sql = 'INSERT INTO stock_data (date_added_utc, symbol, name, data) ' \
+              'VALUES (%(date_added_utc)s, %(symbol)s, %(name)s, %(data)s)'
         conn = None
         try:
             conn = psycopg2.connect(dbname=self.db_name, host=self.host)
@@ -32,8 +32,8 @@ class PostgresProcessor:
 
     def insert_stock_data_list(self, stock_data_list):
 
-        sql = "INSERT INTO stock_data (date_added_utc, symbol, name, data) " \
-              "VALUES (%(date_added_utc)s, %(symbol)s, %(name)s, %(data)s)"
+        sql = 'INSERT INTO stock_data (date_added_utc, symbol, name, data) ' \
+              'VALUES (%(date_added_utc)s, %(symbol)s, %(name)s, %(data)s)'
 
         conn = None
 

@@ -1,5 +1,4 @@
-from dateutil.parser import parse
-from util import *
+from util import parse_float
 
 class Summary:
 
