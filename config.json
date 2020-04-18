@@ -3,8 +3,12 @@
     "summary-url": "https://finance.yahoo.com/quote/{0}",
     "key-statistics-url": "https://finance.yahoo.com/quote/{0}/key-statistics"
   },
+  "yahoo_finance_india":{
+    "summary-url": "https://in.finance.yahoo.com/quote/{0}",
+    "key-statistics-url": "https://in.finance.yahoo.com/quote/{0}/key-statistics"
+  },
   "postgresql":{
     "host": "localhost",
-    "database": "stockinfer"
+    "database": "stock_infer"
   }
 }

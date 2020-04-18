@@ -1,10 +1,13 @@
 import json
 import datetime
+from decimal import Decimal
+from util import json_converter
+
 
 class StockInfo:
 
     def __init__(self):
-        self.summary  = None
+        self.summary = None
         self.valuation_measures = None
         self.profitability = None
         self.management_effectiveness = None
@@ -17,12 +20,5 @@ class StockInfo:
         self.splits = None
         self.stock_price_history = None
 
-
     def to_json(self):
-        return json.dumps(self, default=self.json_converter, sort_keys=True)
-
-    def json_converter(self, obj):
-        if isinstance(obj, datetime.datetime):
-            return obj.isoformat()
-        else:
-            return obj.__dict__
+        return json.dumps(self, default=json_converter, sort_keys=False)
