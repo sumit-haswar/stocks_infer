@@ -1,5 +1,6 @@
 from util import parse_float
 
+
 class BalanceSheet:
 
     def __init__(self, total_cash, total_cash_per_share, total_debt,

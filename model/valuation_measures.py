@@ -1,5 +1,6 @@
 from util import parse_float
 
+
 class ValuationMeasures:
 
     def __init__(self, market_cap, ent_val, trailing_pe, forward_pe,

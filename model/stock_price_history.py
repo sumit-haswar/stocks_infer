@@ -1,5 +1,6 @@
 from util import parse_float
 
+
 class StockPriceHistory:
 
     def __init__(self, pc_change_52_week, high_52_week,

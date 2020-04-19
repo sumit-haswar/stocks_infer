@@ -1,5 +1,6 @@
 from util import parse_float
 
+
 class ShareStats:
 
     def __init__(self, avg_vol_3_day, avg_vol_10_day, shares_outstanding,
