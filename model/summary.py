@@ -1,5 +1,6 @@
 from util import parse_float
 
+
 class Summary:
 
     def __init__(self, prev_close, open, bid, ask, days_range, week_range_52,

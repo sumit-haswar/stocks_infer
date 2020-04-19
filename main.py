@@ -1,7 +1,7 @@
 from web_processor import WebProcessor
 from file_processor import FileProcessor
 from yahoo_finance import Urls, WebParser
-from stock_data import StockInfo
+from model import StockInfo
 from config import config
 from datetime import datetime
 from repository import StockData

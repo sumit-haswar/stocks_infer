@@ -1,4 +1,7 @@
-from stock_data import *
+from model import Summary, \
+    ValuationMeasures, Profitability, MgmtEffectiveness, \
+    IncomeStatement, BalanceSheet, CashFlowStmt, \
+    StockPriceHistory, ShareStats, Dividends, Split, MajorHolders
 from util import parse_pc, get_number_from_currency
 
 class WebParser:
@@ -6,9 +9,9 @@ class WebParser:
     def get_map_from_tr_list(self, tr_list):
         map = {}
         for tr in tr_list:
-            map[next(tr.getiterator('span')).text_content()] = tr.getchildren()[1].text_content()
-        return map;
-
+            map[next(tr.getiterator('span')).text_content()] \
+                = tr.getchildren()[1].text_content()
+        return map
 
     def get_summary(self, tr_list):
         map = self.get_map_from_tr_list(tr_list)
@@ -29,7 +32,6 @@ class WebParser:
                        map['Ex-Dividend Date'],
                        map['1y Target Est'])
 
-
     def get_valuation_measures(self, stats_map):
         return ValuationMeasures(get_number_from_currency(stats_map.get('Market Cap (intraday)', None)),
                                  get_number_from_currency(stats_map['Enterprise Value']),
@@ -41,16 +43,13 @@ class WebParser:
                                  stats_map['Enterprise Value/Revenue'],
                                  stats_map['Enterprise Value/EBITDA'])
 
-
     def get_profitability(self, stats_map):
         return Profitability(parse_pc(stats_map['Profit Margin']),
                              parse_pc(stats_map['Operating Margin']))
 
-
     def get_mgmt_effectiveness(self, stats_map):
         return MgmtEffectiveness(parse_pc(stats_map.get('Return on Assets', None)),
                                  parse_pc(stats_map.get('Return on Equity', None)))
-
 
     def get_income_stmt(self, stats_map):
         return IncomeStatement(revenue_ttm=get_number_from_currency(stats_map['Revenue']),
@@ -62,7 +61,6 @@ class WebParser:
                                diluted_eps_ttm=stats_map['Diluted EPS'],
                                q_earnings_growth=parse_pc(stats_map['Quarterly Earnings Growth']))
 
-
     def get_balance_sheet(self, stats_map):
         return BalanceSheet(total_cash=get_number_from_currency(stats_map['Total Cash']),
                             total_cash_per_share=stats_map['Total Cash Per Share'],
@@ -71,11 +69,11 @@ class WebParser:
                             curr_ratio=stats_map['Current Ratio'],
                             book_val_per_share=stats_map['Book Value Per Share'])
 
-
     def get_cash_flow_stmt(self, stats_map):
-        return CashFlowStmt(operating_cash_flow_ttm=get_number_from_currency(stats_map.get('Operating Cash Flow', None)),
-                            levered_cash_flow_ttm=get_number_from_currency(stats_map.get('Levered Free Cash Flow', None)))
-
+        return CashFlowStmt(operating_cash_flow_ttm
+                            =get_number_from_currency(stats_map.get('Operating Cash Flow', None)),
+                            levered_cash_flow_ttm
+                            =get_number_from_currency(stats_map.get('Levered Free Cash Flow', None)))
 
     def get_stock_price_history(self, stats_map):
         return StockPriceHistory(parse_pc(stats_map.get('52-Week Change', None)),
@@ -83,7 +81,6 @@ class WebParser:
                                  stats_map['52 Week Low'],
                                  stats_map['50-Day Moving Average'],
                                  stats_map['200-Day Moving Average'])
-
 
     def get_share_stats(self, stats_map):
         return ShareStats(avg_vol_3_day=stats_map['Avg Vol (3 month)'],
@@ -95,7 +92,6 @@ class WebParser:
                           short_pc_of_float=stats_map.get('Short % of Float', None),
                           shares_short_prior_month=stats_map.get('Shares Short (prior month)', None))
 
-
     def get_dividends(self, stats_map):
         return Dividends(stats_map['Forward Annual Dividend Rate'],
                          stats_map['Forward Annual Dividend Yield'],
@@ -106,11 +102,9 @@ class WebParser:
                          stats_map['Dividend Date'],
                          stats_map['Ex-Dividend Date'])
 
-
     def get_split(self, stats_map):
         return Split(stats_map['Last Split Factor'],
                      stats_map['Last Split Date'])
-
 
     def get_major_holders(self, stats_map):
         return MajorHolders(stats_map['% Held by Insiders'],
