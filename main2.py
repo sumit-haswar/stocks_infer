@@ -1,12 +1,12 @@
 from web_processor import WebProcessor
 from file_processor import FileProcessor
 from yahoo_finance import Urls, WebParser
-from stock_data import StockInfo
 from config import config
 from datetime import datetime
 from repository import StockData
 import pandas as pd
 import logging
+
 
 def _create_row(stock):
     # earnings_yield = 1 / stock['trailing_pe']
@@ -18,7 +18,7 @@ def _create_row(stock):
     earnings_yield = stock['ebitda'] / stock['ent_val']
     # roc = ebit / (net working capital + net fixed assets)
 
-    return  {
+    return {
         'name': stock['name'],
         'earnings_yield': earnings_yield,
         'eps_ttm': stock['eps_ttm'],
@@ -40,6 +40,7 @@ def _create_row(stock):
         'q_earnings_growth': stock['q_earnings_growth']
     }
 
+
 db_stock_data = StockData(config['postgresql']['host'],
                           config['postgresql']['database'])
 
@@ -51,7 +52,8 @@ list_eps_ttm \
     = sorted([_create_row(row) for row in list_stocks], key=lambda row: row.get('earnings_yield'), reverse=True)
 
 list_return_on_equity \
-    = sorted([_create_row(row) for row in list_stocks], key=lambda row: row.get('pc_return_on_assets_ttm'), reverse=True)
+    = sorted([_create_row(row) for row in list_stocks], key=lambda row: row.get('pc_return_on_assets_ttm'),
+             reverse=True)
 
 # assign rank:
 eps_rank = 1
@@ -64,7 +66,6 @@ roe_rank = 1
 for row in list_return_on_equity:
     row['rank'] = roe_rank
     roe_rank = roe_rank + 1
-
 
 # print(list_eps_ttm)
 # print(list_return_on_equity)
@@ -117,7 +118,6 @@ final_list = [val for key, val in ranked_map.items()]
 
 rank_sorted_list = sorted(final_list, key=lambda item: item['rank'])
 
-
 # print(json.dumps(rank_sorted_list))
 with open('data/output_0.csv', 'a') as out_file:
     out_file.write('name,'
@@ -136,21 +136,21 @@ with open('data/output_0.csv', 'a') as out_file:
                    'q_earnings_growth,' + '\n')
 
 for e in rank_sorted_list:
-    line = "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13}".\
+    line = "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13}". \
         format(e['name'],
                e['earnings_yield'],
                e['eps_ttm'],
                e['trailing_pe'],
-                e['pc_return_on_equity_ttm'],
-                e['pc_return_on_assets_ttm'],
-                e['market_cap'],
-                e['ent_val'],
-                e['pc_profit_margin'],
-                e['pc_operating_margin_ttm'],
-                e['total_cash'],
-                e['total_debt'],
-                e['q_revenue_growth'],
-                e['q_earnings_growth'])
+               e['pc_return_on_equity_ttm'],
+               e['pc_return_on_assets_ttm'],
+               e['market_cap'],
+               e['ent_val'],
+               e['pc_profit_margin'],
+               e['pc_operating_margin_ttm'],
+               e['total_cash'],
+               e['total_debt'],
+               e['q_revenue_growth'],
+               e['q_earnings_growth'])
 
     with open('data/output_0.csv', 'a') as out_file:
         out_file.write(line + '\n')

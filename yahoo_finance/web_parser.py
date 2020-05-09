@@ -4,6 +4,7 @@ from model import Summary, \
     StockPriceHistory, ShareStats, Dividends, Split, MajorHolders
 from util import parse_pc, get_number_from_currency
 
+
 class WebParser:
 
     def get_map_from_tr_list(self, tr_list):
