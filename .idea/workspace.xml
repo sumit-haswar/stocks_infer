@@ -3,9 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="d13b3adb-856e-4ec0-bc2c-7c2880a0d1a9" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main2.py" beforeDir="false" afterPath="$PROJECT_DIR$/main2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/web_processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yahoo_finance/web_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/yahoo_finance/web_parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main2.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -190,7 +189,13 @@
       <workItem from="1587204097823" duration="11603000" />
       <workItem from="1588366844958" duration="33000" />
       <workItem from="1588366894540" duration="267000" />
-      <workItem from="1588990279999" duration="370000" />
+      <workItem from="1588990279999" duration="2087000" />
+      <workItem from="1589164471517" duration="25000" />
+      <workItem from="1589164523080" duration="674000" />
+      <workItem from="1589554739610" duration="150000" />
+      <workItem from="1589554906934" duration="2565000" />
+      <workItem from="1590638428742" duration="419000" />
+      <workItem from="1591075013365" duration="972000" />
     </task>
     <servers />
   </component>
@@ -232,10 +237,11 @@
       <screen x="0" y="23" width="1440" height="877" />
     </state>
     <state x="422" y="271" key="#com.intellij.fileTypes.FileTypeChooser/0.23.1440.877@0.23.1440.877" timestamp="1586119563954" />
-    <state x="387" y="-786" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1587178676253">
-      <screen x="-261" y="-1057" width="1920" height="1057" />
+    <state x="486" y="248" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1589164487896">
+      <screen x="0" y="23" width="1440" height="877" />
     </state>
     <state x="387" y="-786" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.23.1440.877/-261.-1057.1920.1057@-261.-1057.1920.1057" timestamp="1587178676253" />
+    <state x="486" y="248" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.23.1440.877@0.23.1440.877" timestamp="1589164487896" />
     <state width="1440" height="438" key="DebuggerActiveHint" timestamp="1586050116848">
       <screen x="0" y="23" width="1440" height="877" />
     </state>
