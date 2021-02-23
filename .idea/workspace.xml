@@ -2,9 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d13b3adb-856e-4ec0-bc2c-7c2880a0d1a9" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/conftest.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_api/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_api/api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/stocks_infer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/stocks_infer.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/beats_the_market_rank_algo.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/beat_the_market_rank_algo.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,6 +28,17 @@
       </list>
     </option>
   </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -34,11 +50,13 @@
   </component>
   <component name="PropertiesComponent">
     <property name="DatabaseDriversLRU" value="postgresql" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Python" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Python" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -140,19 +158,20 @@
       <item itemvalue="Python.main2" />
       <item itemvalue="Python.main3" />
       <item itemvalue="Python tests.Unittests for test_util.UtilTests" />
-      <item itemvalue="Python tests.Unittests in test_util.py" />
       <item itemvalue="Python tests.Unittests for test_util.UtilTests.test_get_currency_from_number_billion" />
+      <item itemvalue="Python tests.Unittests in test_util.py" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.Unittests for test_util.UtilTests" />
-        <item itemvalue="Python tests.Unittests for test_util.UtilTests.test_get_currency_from_number_billion" />
         <item itemvalue="Python tests.Unittests in test_util.py" />
+        <item itemvalue="Python tests.Unittests for test_util.UtilTests.test_get_currency_from_number_billion" />
+        <item itemvalue="Python tests.Unittests for test_util.UtilTests" />
         <item itemvalue="Python.main3" />
         <item itemvalue="Python.main2" />
       </list>
     </recent_temporary>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -196,11 +215,23 @@
       <workItem from="1589554906934" duration="2565000" />
       <workItem from="1590638428742" duration="419000" />
       <workItem from="1591075013365" duration="972000" />
+      <workItem from="1592633235985" duration="19000" />
+      <workItem from="1592633273524" duration="868000" />
+      <workItem from="1592683042831" duration="773000" />
+      <workItem from="1593569108181" duration="674000" />
+      <workItem from="1594689289230" duration="2328000" />
+      <workItem from="1610863136082" duration="854000" />
+      <workItem from="1611007202255" duration="385000" />
+      <workItem from="1611007606171" duration="1703000" />
+      <workItem from="1611813446418" duration="22000" />
+      <workItem from="1613326394398" duration="793000" />
+      <workItem from="1613933826009" duration="798000" />
+      <workItem from="1614061926071" duration="48000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="2" />
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -219,97 +250,6 @@
       <path value="$PROJECT_DIR$/stock_infer" />
     </ignored-roots>
   </component>
-  <component name="WindowStateProjectService">
-    <state x="320" y="127" key="#Inspections" timestamp="1586714166484">
-      <screen x="0" y="23" width="1440" height="877" />
-    </state>
-    <state x="320" y="127" key="#Inspections/0.23.1440.877@0.23.1440.877" timestamp="1586714166484" />
-    <state x="320" y="127" key="#SQL_Dialects" timestamp="1586135137843">
-      <screen x="0" y="23" width="1440" height="877" />
-    </state>
-    <state x="320" y="127" key="#SQL_Dialects/0.23.1440.877@0.23.1440.877" timestamp="1586135137843" />
-    <state x="166" y="-932" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587179183817">
-      <screen x="-261" y="-1057" width="1920" height="1057" />
-    </state>
-    <state x="166" y="-932" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.877/-261.-1057.1920.1057@-261.-1057.1920.1057" timestamp="1587179183817" />
-    <state x="320" y="127" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.877@0.23.1440.877" timestamp="1586135411227" />
-    <state x="422" y="271" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1586119563954">
-      <screen x="0" y="23" width="1440" height="877" />
-    </state>
-    <state x="422" y="271" key="#com.intellij.fileTypes.FileTypeChooser/0.23.1440.877@0.23.1440.877" timestamp="1586119563954" />
-    <state x="486" y="248" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1589164487896">
-      <screen x="0" y="23" width="1440" height="877" />
-    </state>
-    <state x="387" y="-786" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.23.1440.877/-261.-1057.1920.1057@-261.-1057.1920.1057" timestamp="1587178676253" />
-    <state x="486" y="248" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.23.1440.877@0.23.1440.877" timestamp="1589164487896" />
-    <state width="1440" height="438" key="DebuggerActiveHint" timestamp="1586050116848">
-      <screen x="0" y="23" width="1440" height="877" />
-    </state>
-    <state width="1440" height="438" key="DebuggerActiveHint/0.23.1440.877@0.23.1440.877" timestamp="1586050116848" />
-    <state width="1878" height="426" key="GridCell.Tab.0.bottom" timestamp="1587202361992">
-      <screen x="-261" y="-1057" width="1920" height="1057" />
-    </state>
-    <state width="1878" height="426" key="GridCell.Tab.0.bottom/0.23.1440.877/-261.-1057.1920.1057@-261.-1057.1920.1057" timestamp="1587202361992" />
-    <state width="1398" height="256" key="GridCell.Tab.0.bottom/0.23.1440.877/-261.-1057.1920.1057@0.23.1440.877" timestamp="1586541152595" />
-    <state width="1398" height="216" key="GridCell.Tab.0.bottom/0.23.1440.877@0.23.1440.877" timestamp="1586630158193" />
-    <state width="1878" height="426" key="GridCell.Tab.0.center" timestamp="1587202361991">
-      <screen x="-261" y="-1057" width="1920" height="1057" />
-    </state>
-    <state width="1878" height="426" key="GridCell.Tab.0.center/0.23.1440.877/-261.-1057.1920.1057@-261.-1057.1920.1057" timestamp="1587202361991" />
-    <state width="1398" height="256" key="GridCell.Tab.0.center/0.23.1440.877/-261.-1057.1920.1057@0.23.1440.877" timestamp="1586541152593" />
-    <state width="1398" height="216" key="GridCell.Tab.0.center/0.23.1440.877@0.23.1440.877" timestamp="1586630158191" />
-    <state width="1878" height="426" key="GridCell.Tab.0.left" timestamp="1587202361990">
-      <screen x="-261" y="-1057" width="1920" height="1057" />
-    </state>
-    <state width="1878" height="426" key="GridCell.Tab.0.left/0.23.1440.877/-261.-1057.1920.1057@-261.-1057.1920.1057" timestamp="1587202361990" />
-    <state width="1398" height="256" key="GridCell.Tab.0.left/0.23.1440.877/-261.-1057.1920.1057@0.23.1440.877" timestamp="1586541152592" />
-    <state width="1398" height="216" key="GridCell.Tab.0.left/0.23.1440.877@0.23.1440.877" timestamp="1586630158190" />
-    <state width="1878" height="426" key="GridCell.Tab.0.right" timestamp="1587202361991">
-      <screen x="-261" y="-1057" width="1920" height="1057" />
-    </state>
-    <state width="1878" height="426" key="GridCell.Tab.0.right/0.23.1440.877/-261.-1057.1920.1057@-261.-1057.1920.1057" timestamp="1587202361991" />
-    <state width="1398" height="256" key="GridCell.Tab.0.right/0.23.1440.877/-261.-1057.1920.1057@0.23.1440.877" timestamp="1586541152593" />
-    <state width="1398" height="216" key="GridCell.Tab.0.right/0.23.1440.877@0.23.1440.877" timestamp="1586630158192" />
-    <state width="1398" height="285" key="GridCell.Tab.1.bottom" timestamp="1587178701350">
-      <screen x="-261" y="-1057" width="1920" height="1057" />
-    </state>
-    <state width="1398" height="285" key="GridCell.Tab.1.bottom/0.23.1440.877/-261.-1057.1920.1057@-261.-1057.1920.1057" timestamp="1587178701350" />
-    <state width="1398" height="285" key="GridCell.Tab.1.bottom/0.23.1440.877@0.23.1440.877" timestamp="1586587031907" />
-    <state width="1398" height="285" key="GridCell.Tab.1.center" timestamp="1587178701350">
-      <screen x="-261" y="-1057" width="1920" height="1057" />
-    </state>
-    <state width="1398" height="285" key="GridCell.Tab.1.center/0.23.1440.877/-261.-1057.1920.1057@-261.-1057.1920.1057" timestamp="1587178701350" />
-    <state width="1398" height="285" key="GridCell.Tab.1.center/0.23.1440.877@0.23.1440.877" timestamp="1586587031906" />
-    <state width="1398" height="285" key="GridCell.Tab.1.left" timestamp="1587178701349">
-      <screen x="-261" y="-1057" width="1920" height="1057" />
-    </state>
-    <state width="1398" height="285" key="GridCell.Tab.1.left/0.23.1440.877/-261.-1057.1920.1057@-261.-1057.1920.1057" timestamp="1587178701349" />
-    <state width="1398" height="285" key="GridCell.Tab.1.left/0.23.1440.877@0.23.1440.877" timestamp="1586587031906" />
-    <state width="1398" height="285" key="GridCell.Tab.1.right" timestamp="1587178701350">
-      <screen x="-261" y="-1057" width="1920" height="1057" />
-    </state>
-    <state width="1398" height="285" key="GridCell.Tab.1.right/0.23.1440.877/-261.-1057.1920.1057@-261.-1057.1920.1057" timestamp="1587178701350" />
-    <state width="1398" height="285" key="GridCell.Tab.1.right/0.23.1440.877@0.23.1440.877" timestamp="1586587031907" />
-    <state x="221" y="100" key="SettingsEditor" timestamp="1586292658065">
-      <screen x="0" y="23" width="1440" height="877" />
-    </state>
-    <state x="221" y="100" key="SettingsEditor/0.23.1440.877@0.23.1440.877" timestamp="1586292658065" />
-    <state x="397" y="294" key="com.intellij.ide.util.TipDialog" timestamp="1586574523222">
-      <screen x="0" y="23" width="1440" height="877" />
-    </state>
-    <state x="397" y="294" key="com.intellij.ide.util.TipDialog/0.23.1440.877/-261.-1057.1920.1057@0.23.1440.877" timestamp="1585962858286" />
-    <state x="397" y="294" key="com.intellij.ide.util.TipDialog/0.23.1440.877@0.23.1440.877" timestamp="1586574523222" />
-    <state x="243" y="-822" width="911" height="586" key="find.popup" timestamp="1587269718607">
-      <screen x="-261" y="-1057" width="1920" height="1057" />
-    </state>
-    <state x="243" y="-822" width="911" height="586" key="find.popup/0.23.1440.877/-261.-1057.1920.1057@-261.-1057.1920.1057" timestamp="1587269718607" />
-    <state x="378" y="218" width="683" height="486" key="find.popup/0.23.1440.877@0.23.1440.877" timestamp="1587254874844" />
-    <state x="252" y="-828" width="894" height="815" key="search.everywhere.popup" timestamp="1587203062322">
-      <screen x="-261" y="-1057" width="1920" height="1057" />
-    </state>
-    <state x="252" y="-828" width="894" height="815" key="search.everywhere.popup/0.23.1440.877/-261.-1057.1920.1057@-261.-1057.1920.1057" timestamp="1587203062322" />
-    <state x="385" y="213" width="670" height="676" key="search.everywhere.popup/0.23.1440.877@0.23.1440.877" timestamp="1586637280786" />
-  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
@@ -321,14 +261,14 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/stocks_infer$main2.coverage" NAME="main2 Coverage Results" MODIFIED="1586587132455" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/stocks_infer$Unittests_for_test_util_UtilTests.coverage" NAME="Unittests for test_util.UtilTests Coverage Results" MODIFIED="1587199343636" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/stocks_infer$Unittests_in_test_util_py.coverage" NAME="Unittests in test_util.py Coverage Results" MODIFIED="1587199291840" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/stocks_infer$main.coverage" NAME="main Coverage Results" MODIFIED="1586146051057" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/stocks_infer$main3.coverage" NAME="main3 Coverage Results" MODIFIED="1587199205657" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/stocks_infer$stock_data.coverage" NAME="stock_data Coverage Results" MODIFIED="1586136786432" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/repository" />
+    <SUITE FILE_PATH="coverage/stocks_infer$main2.coverage" NAME="main2 Coverage Results" MODIFIED="1586587132455" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/stocks_infer$Unittests_for_test_util_UtilTests_test_get_currency_from_number_billion.coverage" NAME="Unittests for test_util.UtilTests.test_get_currency_from_number_billion Coverage Results" MODIFIED="1587199327772" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/stocks_infer$scratch.coverage" NAME="scratch Coverage Results" MODIFIED="1586138772270" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
-    <SUITE FILE_PATH="coverage/stocks_infer$stock_data.coverage" NAME="stock_data Coverage Results" MODIFIED="1586136786432" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/repository" />
+    <SUITE FILE_PATH="coverage/stocks_infer$main.coverage" NAME="main Coverage Results" MODIFIED="1586146051057" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/stocks_infer$Unittests_for_test_util_UtilTests.coverage" NAME="Unittests for test_util.UtilTests Coverage Results" MODIFIED="1587199343636" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/stocks_infer$main3.coverage" NAME="main3 Coverage Results" MODIFIED="1587199205657" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateExpression">
