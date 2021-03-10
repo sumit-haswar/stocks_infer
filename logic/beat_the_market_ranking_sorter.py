@@ -1,5 +1,12 @@
 from config import config
 from repository import StockData
+from .ranking_sorter import RankingSorter
+
+
+class BeatTheMarketRankingSorter(RankingSorter):
+
+    def __init__(self):
+        super().__init__()
 
 
 def _create_row(stock):
@@ -36,7 +43,6 @@ def _create_row(stock):
 
 
 def main():
-
     db_stock_data = StockData(config['postgresql']['host'],
                               config['postgresql']['database'])
 
@@ -44,30 +50,28 @@ def main():
 
     # list_return_on_equity = db_stock_data.get_stock_data_by_return_on_equity()
 
-    list_eps_ttm \
-        = sorted([_create_row(row) for row in list_stocks],
-                 key=lambda row: row.get('earnings_yield'),
-                 reverse=True)
+    # sort stocks by earnings_yield (desc)
+    list_eps_ttm = sorted([_create_row(row) for row in list_stocks],
+                          key=lambda row: row.get('earnings_yield'),
+                          reverse=True)
 
-    list_return_on_equity \
-        = sorted([_create_row(row) for row in list_stocks],
-                 key=lambda row: row.get('pc_return_on_assets_ttm'),
-                 reverse=True)
+    # sort stocks by % return on assets
+    list_return_on_equity = sorted([_create_row(row) for row in list_stocks],
+                                   key=lambda row: row.get('pc_return_on_assets_ttm'),
+                                   reverse=True)
 
-    # assign rank:
+    # assign 1-n sequential rank to list_eps_ttm
     eps_rank = 1
     for row in list_eps_ttm:
         row['rank'] = eps_rank
         # ranked_list_eps_ttm.append(row)
         eps_rank = eps_rank + 1
 
+    # assign 1-n sequential rank to list_return_on_equity
     roe_rank = 1
     for row in list_return_on_equity:
         row['rank'] = roe_rank
         roe_rank = roe_rank + 1
-
-    # print(list_eps_ttm)
-    # print(list_return_on_equity)
 
     # combine rank
     ranked_map = {}
@@ -106,18 +110,14 @@ def main():
         # find in map
         stock_entry = ranked_map.get(name, None)
         if stock_entry:
+            # combine ranks by a simple summation
             stock_entry['rank'] = stock['rank'] + roe_rank
         # update rank
 
-    # print(ranked_map)
-
     final_list = [val for key, val in ranked_map.items()]
-
-    # print(final_list)
 
     rank_sorted_list = sorted(final_list, key=lambda item: item['rank'])
 
-    # print(json.dumps(rank_sorted_list))
     with open('data/output_0.csv', 'a') as out_file:
         out_file.write('name,'
                        'earnings_yield,'
@@ -154,11 +154,4 @@ def main():
         with open('data/output_0.csv', 'a') as out_file:
             out_file.write(line + '\n')
 
-    # import json
-    # print(json.dumps(ranked_map))
-
     # generate new ranked
-
-
-if __name__ == "__main__":
-    main()
