@@ -2,14 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d13b3adb-856e-4ec0-bc2c-7c2880a0d1a9" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/conftest.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web_api/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web_api/api.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/stocks_infer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/stocks_infer.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/logic/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/logic/ranking_sorter.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/beats_the_market_rank_algo.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/beat_the_market_rank_algo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/beat_the_market_rank_algo.py" beforeDir="false" afterPath="$PROJECT_DIR$/logic/beat_the_market_ranking_sorter.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,6 +56,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/logic" />
       <recent name="$PROJECT_DIR$/model" />
       <recent name="$PROJECT_DIR$/lookup_data" />
     </key>
@@ -226,7 +223,11 @@
       <workItem from="1611813446418" duration="22000" />
       <workItem from="1613326394398" duration="793000" />
       <workItem from="1613933826009" duration="798000" />
-      <workItem from="1614061926071" duration="48000" />
+      <workItem from="1614061926071" duration="320000" />
+      <workItem from="1614404601234" duration="2851000" />
+      <workItem from="1614711233937" duration="8000" />
+      <workItem from="1615147643969" duration="1251000" />
+      <workItem from="1615352503461" duration="1511000" />
     </task>
     <servers />
   </component>
@@ -256,6 +257,15 @@
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/util.py</url>
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/logic/beat_the_market_ranking_sorter.py</url>
+          <line>74</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/logic/beat_the_market_ranking_sorter.py</url>
+          <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
