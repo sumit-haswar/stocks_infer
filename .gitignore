@@ -105,3 +105,4 @@ venv.bak/
 
 # intelliJ
 .idea/
+data/

@@ -1,7 +1,6 @@
 import psycopg2
 import psycopg2.extras
 
-
 class Db:
     def __init__(self, host, db_name):
         self.host = host
