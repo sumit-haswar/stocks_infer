@@ -1,12 +1,12 @@
 from config import config
 from repository import StockData
-from .ranking_sorter import RankingSorter
-
-
-class BeatTheMarketRankingSorter(RankingSorter):
-
-    def __init__(self):
-        super().__init__()
+# from .ranking_sorter import RankingSorter
+#
+#
+# class BeatTheMarketRankingSorter(RankingSorter):
+#
+#     def __init__(self):
+#         super().__init__()
 
 
 def _create_row(stock):
@@ -118,7 +118,7 @@ def main():
 
     rank_sorted_list = sorted(final_list, key=lambda item: item['rank'])
 
-    with open('data/output_0.csv', 'a') as out_file:
+    with open('../data/output_0.csv', 'a') as out_file:
         out_file.write('name,'
                        'earnings_yield,'
                        'eps_ttm,'
@@ -151,7 +151,10 @@ def main():
                    e['q_revenue_growth'],
                    e['q_earnings_growth'])
 
-        with open('data/output_0.csv', 'a') as out_file:
+        with open('../data/output_0.csv', 'a') as out_file:
             out_file.write(line + '\n')
 
     # generate new ranked
+
+if __name__ == "__main__":
+    main()

@@ -7,11 +7,12 @@ from datetime import datetime
 from repository import StockData
 import pandas as pd
 import logging
-
+from typing import List
 
 web_processor = WebProcessor()
 parser = WebParser()
 
+from lxml.etree import tostring
 
 def get_stock_info(stock, dt_utc_now):
     stock_data = StockInfo()
@@ -22,11 +23,23 @@ def get_stock_info(stock, dt_utc_now):
 
         # get statistics data
         stats_content = web_processor.get_body(Urls.key_statistics.format(stock))
+        # stats_map = parser.get_map_from_tr_list(
+        #     web_processor.get_element_by_data_reactid(stats_content, '11').xpath('//tr'))
+
+        inner_html = tostring(stats_content)
+        print(inner_html)
+
         stats_map = parser.get_map_from_tr_list(
-            web_processor.get_element_by_data_reactid(stats_content, '11').xpath('//tr'))
+            web_processor.get_element_by_data_reactid(stats_content, '48').xpath('//tr'))
+
+        valuation_measures = parser.get_map_from_tr_list(
+            web_processor.get_element_by_data_reactid(stats_content, '48').xpath('//tr'))
 
         stock_data.name = stock
         stock_data.date_added_utc = str(dt_utc_now.date())
+
+        # print('stats_map:')
+        # print(stats_map)
 
         stock_data.summary = parser.get_summary(summary_div.xpath('//tr'))
         stock_data.valuation_measures = parser.get_valuation_measures(stats_map)
@@ -44,8 +57,27 @@ def get_stock_info(stock, dt_utc_now):
         return stock_data
 
     except Exception as ex:
+        # print(ex)
         # todo log exception
         return None
+
+
+def get_file_data(file_paths: List[str]) -> List:
+    stock_symbol_list = []
+
+    for file_path in file_paths:
+        data_frame = pd.read_csv(file_path, delimiter=',')
+        stock_symbol_list += data_frame['stock'].tolist()
+
+    return stock_symbol_list
+
+
+def _get_stock_list():
+    return ['TRMB', 'TFC', 'TWTR', 'TYL', 'TSN', 'UDR', 'ULTA', 'UAA', 'UA', 'UNP', 'UAL', 'UPS', 'URI', 'UNH', 'UHS',
+            'UNM', 'USB', 'VLO', 'VTR', 'VRSN', 'VRSK', 'VZ', 'VRTX', 'VFC', 'VIAC', 'VTRS', 'V', 'VNO', 'VMC', 'WRB',
+            'WAB', 'WBA', 'WMT', 'WM', 'WAT', 'WEC', 'WFC', 'WELL', 'WST', 'WDC', 'WU', 'WRK', 'WY', 'WHR', 'WMB',
+            'WLTW', 'GWW', 'WYNN', 'XEL', 'XLNX', 'XYL', 'YUM', 'ZBRA', 'ZBH', 'ZION', 'ZTS', 'PEAK', 'HWM', 'J',
+            'LUMN', 'MCK', 'NLOK', 'NVR', 'OGN', 'OTIS', 'RTX', 'TT']
 
 
 def main():
@@ -53,48 +85,45 @@ def main():
 
     :return:
     """
-
-    file_processor = FileProcessor("")
-
     db_stock_data = StockData(config['postgresql']['host'],
                               config['postgresql']['database'])
 
     # get stock symbols from data file
     # pharma_stocks = file_processor.read_file("lookup_data/pharma_stocks")
-
-    fortune_500_0_stocks = file_processor.read_file("lookup_data/fortune_500_0")
-
-    s_p_500_data = pd.read_csv("lookup_data/s_p_500.csv", delimiter=',')
-    s_p_500_data_stocks = s_p_500_data['stock'].tolist()
-
     stock_data_list = []
     dt_utc_now = datetime.utcnow()
 
-    stocks = s_p_500_data_stocks + fortune_500_0_stocks
+    # stocks = get_file_data(['../lookup_data/s_p_500.csv'])
+
+    stocks = _get_stock_list()
 
     invalid_data = []
 
+    # stocks = stocks[100:]
+
     print('getting data from yahoo . . .')
-    for stock in stocks:
+    for stock in stocks[:10]:
         stock_data = get_stock_info(stock, dt_utc_now)
         if stock_data:
             stock_data_list.append(stock_data)
         else:
             invalid_data.append(stock)
 
-    file_processor.save_file('data/fortune_500_0.json',str(stock_data_list))
+    # file_processor.save_file('data/fortune_500_0.json',str(stock_data_list))
 
     print('adding to database . . .')
     for stock_data in stock_data_list:
         try:
             db_stock_data.insert_stock_data(stock_data)
         except Exception as ex:
+            print(ex)
             # todo log exception
             invalid_data.append(stock_data.name)
             continue
 
     print('invalid_data:')
     print(invalid_data)
+
     # ['AET', 'APC', 'ANDV', 'BHGE', 'BBT', 'BF.B', 'CA', 'CSRA', 'DWDP', 'DPS', 'EVHC',
     # 'ESRX', 'GGP', 'HCP', 'LLL', 'LUK', 'KORS', 'MON', 'NFX', 'PX', 'RHT', 'COL',
     # 'SCG', 'SYMC', 'TWX', 'TMK', 'TSS', 'WYN', 'XL']
@@ -104,6 +133,7 @@ def main():
     # 'TWX', 'TMK', 'TSS', 'WYN', 'XL', 'BRK.B', 'GD', 'JEC', 'LUK', 'MCK', 'CRM',
     # 'STI', 'SYMC', 'VIAB', 'MCK', 'CRM']
 
+    print('total invalid_data: {0}'.format(len(invalid_data)))
     print('total records added: {0}'.format(len(stock_data_list)))
     # 540
 

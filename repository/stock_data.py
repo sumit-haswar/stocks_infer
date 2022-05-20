@@ -96,7 +96,8 @@ class StockData:
                                           'pe_ratio_ttm': stock_info.summary.pe_ratio_ttm,
                                           'q_earnings_growth': stock_info.income_statement.q_earnings_growth,
                                           'shares_outstanding': stock_info.share_statistics.shares_outstanding,
-                                          'book_val_per_share': stock_info.balance_sheet.book_val_per_share
+                                          'book_val_per_share': stock_info.balance_sheet.book_val_per_share,
+                                          'eps_ttm': stock_info.income_statement.diluted_eps_ttm
                                           })
 
     def insert_stock_data_list(self, stock_data_list):
