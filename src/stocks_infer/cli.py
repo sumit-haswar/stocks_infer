@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import argparse
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
+import json
 from pathlib import Path
 from typing import Sequence
 
@@ -26,6 +27,15 @@ def build_parser(config: AppConfig) -> argparse.ArgumentParser:
     commands.add_parser(
         "list-algorithms", help="List registered screening algorithms."
     )
+
+    research = commands.add_parser("research", help="Create dated company research reports from a recorded historical bundle.")
+    research.add_argument("--input", type=Path, required=True)
+    research.add_argument("--as-of", type=date.fromisoformat, required=True)
+    research.add_argument("--output-root", type=Path, default=config.output_root)
+    research.add_argument("--run-id")
+    compare = commands.add_parser("research-compare", help="Compare two saved research reviews and verify their artifacts.")
+    compare.add_argument("--before", type=Path, required=True)
+    compare.add_argument("--after", type=Path, required=True)
 
     fixture = commands.add_parser(
         "screen-fixture",
@@ -68,6 +78,20 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     if arguments.command == "screen-fixture":
         return _screen_fixture(arguments)
+
+    if arguments.command == "research":
+        from stocks_infer.research.artifacts import write_research_run
+
+        destination = write_research_run(arguments.input, arguments.output_root, arguments.as_of, arguments.run_id)
+        print(f"Research review: {destination / 'README.md'}")
+        print(f"Comparison: {destination / 'comparison.csv'}")
+        return 0
+
+    if arguments.command == "research-compare":
+        from stocks_infer.research.artifacts import compare_runs
+
+        print(json.dumps(compare_runs(arguments.before, arguments.after), indent=2))
+        return 0
 
     parser.error(f"unknown command: {arguments.command}")
     return 2
