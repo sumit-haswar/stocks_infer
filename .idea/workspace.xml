@@ -1,21 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="d13b3adb-856e-4ec0-bc2c-7c2880a0d1a9" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/output.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/output_0.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/logic/beat_the_market_ranking_sorter.py" beforeDir="false" afterPath="$PROJECT_DIR$/logic/beat_the_market_ranking_sorter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logic/ranking_sorter.py" beforeDir="false" afterPath="$PROJECT_DIR$/logic/ranking_sorter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lookup_data/pharma_stocks" beforeDir="false" afterPath="$PROJECT_DIR$/lookup_data/pharma_stocks.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repository/db.py" beforeDir="false" afterPath="$PROJECT_DIR$/repository/db.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repository/stock_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/repository/stock_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/yahoo_web_scrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/yahoo_web_scrapper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web_api/api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stocks_infer/cli.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/stocks_infer/cli.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,15 +52,27 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 7
+}]]></component>
   <component name="ProjectId" id="1OeaCHUOQrPUdNchYBFNQkleF0P" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "WebServerToolWindowFactoryState": "false"
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "develop",
+    "last_opened_file_path": "/Users/sumithaswar/src/stocks_infer",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -80,6 +85,7 @@
   <component name="RunManager" selected="Python.beat_the_market_ranking_sorter">
     <configuration name="beat_the_market_ranking_sorter" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="stocks_infer" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -102,6 +108,7 @@
     </configuration>
     <configuration name="yahoo_web_scrapper" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="stocks_infer" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -124,6 +131,7 @@
     </configuration>
     <configuration name="Unittests for test_util.UtilTests" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="stocks_infer" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
@@ -139,6 +147,7 @@
     </configuration>
     <configuration name="Unittests for test_util.UtilTests.test_get_currency_from_number_billion" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="stocks_infer" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
@@ -154,6 +163,7 @@
     </configuration>
     <configuration name="Unittests in test_util.py" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="stocks_infer" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
@@ -183,6 +193,14 @@
         <item itemvalue="Python tests.Unittests for test_util.UtilTests" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-a71380e98a7c-JavaScript-PY-252.28539.90" />
+        <option value="bundled-python-sdk-116fdca60d1a-968fe969f28a-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.28539.90" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
@@ -262,6 +280,7 @@
       <workItem from="1626747578812" duration="26000" />
       <workItem from="1628823612824" duration="2060000" />
       <workItem from="1653019304812" duration="3815000" />
+      <workItem from="1789865988718" duration="2469000" />
     </task>
     <servers />
   </component>
