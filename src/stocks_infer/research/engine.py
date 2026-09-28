@@ -2,23 +2,26 @@
 
 from datetime import date
 
-from stocks_infer.research.features import History, build_features
+from stocks_infer.research.features import FactUnavailable, History, build_features, build_ttm_features
 from stocks_infer.research.models import Assessment, Company, CompanyResearch, ResearchBundle
 from stocks_infer.research.valuation import value_scenario
 
 
 def research_company(bundle: ResearchBundle, company: Company, as_of: date) -> CompanyResearch:
     history = History(bundle.facts, company.security_id, as_of)
-    features = build_features(history, company.currency)
+    annual_features = build_features(history, company.currency)
+    ttm_features = build_ttm_features(history, company.currency)
+    features = annual_features + ttm_features
     latest_end = history.periods[-1] if history.periods else None
-    latest = {f.name: f for f in features if f.period_end == latest_end}
+    latest = {f.name: f for f in annual_features if f.period_end == latest_end}
+    latest_ttm_end = max((f.period_end for f in ttm_features), default=None)
 
     def value(name):
         feature = latest.get(name)
         return feature.value if feature else None
 
     warnings: list[str] = []
-    positive_years = sum(f.name == "operating_income" and f.value is not None and f.value > 0 for f in features)
+    positive_years = sum(f.name == "operating_income" and f.value is not None and f.value > 0 for f in annual_features)
     reasons = [company.classification_reason] if company.classified_at <= as_of else []
     if company.classified_at > as_of:
         framework = "needs_review"
@@ -35,33 +38,105 @@ def research_company(bundle: ResearchBundle, company: Company, as_of: date) -> C
 
     if len(history.periods) < 5:
         warnings.append(f"Only {len(history.periods)} annual periods available; target is five plus opening balances")
-    warnings.append("Annual assessment only; quarterly trends, debt maturities, and industry comparisons require further review")
+    warnings.extend(f"{f.name}: {warning}" for f in latest.values() for warning in f.warnings)
+    warnings.append("Annual assessment only; debt maturities and industry comparisons require further review")
+    if latest_ttm_end is not None:
+        warnings.append(
+            f"TTM evidence through {latest_ttm_end} is displayed as a separate trend layer and does not silently replace the annual assessment"
+        )
+    else:
+        warnings.append("No complete four-quarter TTM window could be normalized at this cutoff")
+    if value("net_debt") is not None:
+        warnings.append("Net debt subtracts unrestricted cash and cash equivalents only; marketable investments require a separate valuation-bridge review")
     stale_fundamentals = latest_end is None or (as_of - latest_end).days > 550
     if stale_fundamentals:
         warnings.append("Annual fundamentals are missing or older than 550 days")
     if value("equity") is not None and value("equity") <= 0:
         warnings.append("Non-positive book equity: investigate buybacks, accumulated losses, and accounting context")
+    if latest_end is not None:
+        try:
+            debt_fact = history.get("debt", latest_end)
+            if debt_fact.source_concept.startswith("derived:sum("):
+                warnings.append("Debt is a filing-reconciled sum of current/noncurrent carrying amounts; operating leases and undrawn facilities are excluded")
+            elif debt_fact.source_concept == "reconciled:no-interest-bearing-debt":
+                warnings.append("The filing explicitly supports zero outstanding interest-bearing debt; operating leases and undrawn facilities are excluded")
+        except FactUnavailable:
+            pass
+        try:
+            interest_fact = history.get("interest_expense", latest_end)
+            if "interest expense and other, net" in interest_fact.source_concept.lower():
+                warnings.append(
+                    "Interest coverage uses the filing's combined interest-expense-and-other-net line "
+                    "because a separate comparable accrual-interest line is unavailable"
+                )
+            latest_ttm_interest = next(
+                (
+                    feature for feature in ttm_features
+                    if feature.period_end == latest_ttm_end and feature.name == "interest_coverage"
+                ),
+                None,
+            )
+            if (
+                "gross interest expense" in interest_fact.source_concept.lower()
+                and latest_ttm_interest is not None
+                and latest_ttm_interest.status == "missing"
+            ):
+                warnings.append(
+                    "TTM interest coverage is withheld because the annual fact is gross interest expense "
+                    "while the interim filing reports a net interest line; incompatible definitions are not bridged"
+                )
+        except FactUnavailable:
+            pass
+        try:
+            shares_fact = history.get("diluted_shares", latest_end)
+            if "common stock shares outstanding - assuming dilution" in shares_fact.source_concept.lower():
+                warnings.append(
+                    "Diluted shares use the filing's total common-equivalent Common Stock denominator; "
+                    "the separate Class B denominator is not added again"
+                )
+        except FactUnavailable:
+            pass
+    if value("revenue_growth") is not None and abs(value("revenue_growth")) > .5:
+        warnings.append("Revenue changed by more than 50%; investigate acquisitions, disposals, and reporting-boundary changes before treating it as organic growth")
+    if value("share_growth") is not None and abs(value("share_growth")) > .5:
+        warnings.append("Weighted-average shares changed by more than 50%; investigate mergers, listings, and other capital-structure discontinuities")
+    if value("operating_income") is not None and value("operating_income") > 0 and value("net_income") is not None and value("net_income") > 1.5 * value("operating_income"):
+        warnings.append("Net income materially exceeds operating income; inspect tax benefits and non-operating gains before treating earnings as recurring")
+    if value("pretax_return_on_capital") is not None and value("pretax_return_on_capital") > 1:
+        warnings.append("Capital-return approximation exceeds 100%; inspect cash subtraction, lease obligations, and negative working capital before comparison")
+    if value("debt") == 0 and latest_end is not None:
+        try:
+            annual_start = history.get("revenue", latest_end).period_start
+            interest_fact = history.get("interest_expense", latest_end, start=annual_start)
+            if interest_fact.value > 0:
+                warnings.append("Year-end debt is zero but annual interest expense is positive; investigate intra-year borrowings, commitment fees, and other interest-bearing liabilities")
+        except FactUnavailable:
+            pass
 
     assessments = []
 
     def assess(dimension, checks):
         observations, outcomes = [], []
+        unresolved = False
         for metric, predicate, favorable, unfavorable in checks:
+            feature = latest.get(metric)
+            if feature is not None and feature.status == "not_meaningful":
+                observations.append(f"{metric}: not meaningful — {feature.explanation}")
+                continue
             observed = value(metric)
             if observed is None:
                 explanation = latest[metric].explanation if metric in latest else "No annual observations"
                 observations.append(f"{metric}: unavailable — {explanation}")
-                outcomes.append(None)
+                unresolved = True
             else:
                 passed = predicate(observed)
                 outcomes.append(passed)
                 observations.append(f"{metric}: {favorable if passed else unfavorable}")
-        available = [outcome for outcome in outcomes if outcome is not None]
-        if not available:
+        if not outcomes:
             status = "insufficient_evidence"
-        elif any(outcome is False for outcome in available):
-            status = "mixed" if any(available) else "concerns"
-        elif len(available) != len(outcomes):
+        elif any(outcome is False for outcome in outcomes):
+            status = "mixed" if any(outcomes) else "concerns"
+        elif unresolved:
             status = "incomplete"
         else:
             status = "supportive"
@@ -136,11 +211,14 @@ def research_company(bundle: ResearchBundle, company: Company, as_of: date) -> C
         valuation_status = "scenario_available"
         valuation_observations = (f"Base-case value relative to price: {base['upside']:+.1%}; conditional on researcher assumptions", "Scenario values are not probabilities or an investment recommendation")
     assessments.append(Assessment("valuation", valuation_status, valuation_observations))
-    missing = [f.name for f in latest.values() if f.value is None]
-    coverage_complete = bool(latest) and not missing and len(history.periods) >= 5 and not stale_fundamentals
+    unresolved = [f.name for f in latest.values() if f.status in {"missing", "invalid"}]
+    not_meaningful = [f.name for f in latest.values() if f.status == "not_meaningful"]
+    available_count = sum(f.status == "available" for f in latest.values())
+    coverage_complete = bool(latest) and not unresolved and len(history.periods) >= 5 and not stale_fundamentals
     assessments.append(Assessment("evidence", "available_for_annual_review" if coverage_complete else "incomplete", (
-        f"{len(history.periods)} annual periods; {len(latest) - len(missing)}/{len(latest)} latest features available",
-        "Unavailable features: " + (", ".join(missing) or "none"),
+        f"{len(history.periods)} annual periods; {available_count}/{len(latest)} latest features have values; {len(not_meaningful)} structurally not meaningful",
+        "Unresolved features: " + (", ".join(unresolved) or "none"),
+        "Structurally not meaningful: " + (", ".join(not_meaningful) or "none"),
         "Evidence coverage is separate from business quality; narrative completeness and quarterly evidence need manual review",
     )))
 

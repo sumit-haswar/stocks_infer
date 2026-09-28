@@ -6,19 +6,23 @@
   <component name="ChangeListManager">
     <list default="true" id="d13b3adb-856e-4ec0-bc2c-7c2880a0d1a9" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/stocks_infer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/stocks_infer.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/established-business-research-contract.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/established-business-research-contract.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/research-workflow-implementation-plan.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/research-workflow-implementation-plan.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/stocks_infer/cli.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/stocks_infer/cli.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stocks_infer/research/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/stocks_infer/research/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stocks_infer/research/artifacts.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/stocks_infer/research/artifacts.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stocks_infer/research/engine.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/stocks_infer/research/engine.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stocks_infer/research/features.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/stocks_infer/research/features.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stocks_infer/research/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/stocks_infer/research/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_research_workflow.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_research_workflow.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="DatabaseLocalColorSettings">
-    <colors>
-      <entry key="ce8f4ecd-3d5a-42c8-9e86-a778801c4fa3" value="Orange" />
-    </colors>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -52,9 +56,9 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 7
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
   <component name="ProjectId" id="1OeaCHUOQrPUdNchYBFNQkleF0P" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -64,7 +68,9 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "WebServerToolWindowFactoryState": "false",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
     "git-widget-placeholder": "develop",
     "last_opened_file_path": "/Users/sumithaswar/src/stocks_infer",
     "node.js.detected.package.eslint": "true",
@@ -72,6 +78,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "python.packages.toolwindow.project.migrated.to.right.top.v2": "true",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -96,7 +103,9 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="DEBUG_JUST_MY_CODE" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="RUN_TOOL" value="" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/logic/beat_the_market_ranking_sorter.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -119,7 +128,9 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="DEBUG_JUST_MY_CODE" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="RUN_TOOL" value="" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tools/yahoo_web_scrapper.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -139,7 +150,9 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="DEBUG_JUST_MY_CODE" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="RUN_TOOL" value="" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;test_util.UtilTests&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
@@ -155,7 +168,9 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="DEBUG_JUST_MY_CODE" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="RUN_TOOL" value="" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;test_util.UtilTests.test_get_currency_from_number_billion&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
@@ -171,7 +186,9 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="DEBUG_JUST_MY_CODE" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="RUN_TOOL" value="" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/test_util.py&quot;" />
       <option name="_new_targetType" value="&quot;PATH&quot;" />
@@ -197,8 +214,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-a71380e98a7c-JavaScript-PY-252.28539.90" />
-        <option value="bundled-python-sdk-116fdca60d1a-968fe969f28a-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.28539.90" />
+        <option value="bundled-js-predefined-d6986cc7102b-4abd2a77f808-JavaScript-PY-262.10968.92" />
+        <option value="bundled-python-sdk-73a66231627c-5bd6d13a2a75-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-262.10968.92" />
       </set>
     </attachedChunks>
   </component>
@@ -280,7 +297,8 @@
       <workItem from="1626747578812" duration="26000" />
       <workItem from="1628823612824" duration="2060000" />
       <workItem from="1653019304812" duration="3815000" />
-      <workItem from="1789865988718" duration="2469000" />
+      <workItem from="1789865988718" duration="10015000" />
+      <workItem from="1790542962923" duration="837000" />
     </task>
     <servers />
   </component>

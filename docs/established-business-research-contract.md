@@ -1,13 +1,13 @@
 # Established Business Research Contract
 
-Framework: `established-operating/0.1.0`  
-Features: `annual-features/0.1.0`  
+Framework: `established-operating/0.2.0`
+Features: `annual-ttm-features/0.3.0`
 Valuation: `fcff/0.1.0`
 
-This is the first recorded-data implementation milestone of the
+This is the recorded-data research contract for the
 [research workflow plan](research-workflow-implementation-plan.md). It provides
-a runnable research loop, not a completed or empirically validated investment
-screen. All bundled examples are synthetic.
+a runnable research loop, not an empirically validated investment screen. The
+test fixtures are synthetic; the Development-cohort reports use saved SEC data.
 
 ## Scope and routing
 
@@ -52,8 +52,17 @@ editable example; its generator documents the ten scenarios.
   values or intervals with the same latest availability date are marked invalid
   until reconciled. Equal duplicates choose a stable fact ID.
 - Annual flow intervals must agree with the revenue interval. Comparative annual
-  dates must be 330–400 days apart. Quarter and YTD facts can be preserved but
-  never substituted for annual facts. Quarterly/TTM derivation is pending.
+  dates must be 330–400 days apart. Annual assessments never substitute quarter,
+  YTD, or TTM facts. Growth between fiscal years differing by at least five days
+  is marked as unadjusted for the unequal year lengths.
+- Quarterly normalization keeps reported discrete quarters and YTD intervals
+  separate. Missing quarters may be derived only from cumulative facts with the
+  same fiscal start; direct reported quarters from the same filing date take
+  precedence. Diluted-share derivation is day-weighted.
+- TTM features require four contiguous normalized quarters spanning 330–400 days.
+  A metric with a missing discrete quarter may use annual plus current YTD minus
+  prior comparable YTD. Comparable YTD lengths may differ by at most seven days;
+  unequal TTM lengths are disclosed and are not week-adjusted.
 - Valuation prices must be unadjusted and supplied with shares on a consistent
   split basis, plus separate observation dates. The program rejects a declared
   adjusted-price series but cannot independently verify the supplied share basis.
@@ -77,18 +86,28 @@ and the formula or explanation for unavailability. Annual features include:
 | Revenue growth | Current / comparable prior annual revenue minus one |
 | Share growth | Current / prior diluted weighted-average shares minus one |
 | Interest coverage | Operating income / positive interest expense |
-| Net debt | Debt minus cash |
+| Debt | Filing-presented carrying amount of outstanding interest-bearing borrowings, including current and noncurrent portions; exclude operating leases, undrawn facilities, and letters of credit unless a framework explicitly changes the definition |
+| Net debt | Debt minus unrestricted corporate cash; separately review restricted/customer funds, marketable investments, finance leases, preferred equity, and minority interests before valuation |
 | Pre-tax return on capital | Operating income / average opening and closing (debt + equity − cash) |
 
 The capital-return approximation is explicitly **pre-tax**, not after-tax ROIC
-or a claim to an exact Magic Formula definition. Both capital observations must
-be positive; negative capital becomes `not_meaningful`, not a low score.
+or a claim to an exact Magic Formula definition. Both capital and book-equity
+observations must be positive; negative values become `not_meaningful`, not a low score.
 Zero-interest companies also have a nonmeaningful interest-coverage ratio, not
 a zero or infinite coverage score. Share-count changes require split, acquisition,
 and compensation context; the software does not assert they all represent dilution.
 
+Operating leases remain outside debt and invested capital in this release. A
+lease-adjusted return would also require a consistent rent adjustment to operating
+income, so adding only the liability would create false precision. `net_debt`
+subtracts unrestricted corporate cash and cash equivalents. Marketable securities
+are disclosed for a separate valuation-bridge review and are not automatically
+classified as excess cash; restricted and customer funds remain excluded.
+
 Feature states are `available`, `missing`, `invalid`, and `not_meaningful`.
 There is no substitution, favorable imputation, or redistribution of weights.
+`not_meaningful` is a resolved structural state. It does not count as missing
+evidence and is excluded from the applicable checks within an assessment.
 
 ## Independent assessments
 
@@ -101,12 +120,14 @@ checks organize investigation and must not be mistaken for empirical cutoffs:
 | Growth | Positive annual revenue growth and share growth ≤ 2% |
 | Resilience | Positive operating cash flow and interest coverage ≥ 3x |
 
-All observed checks supportive gives `supportive`. Supportive observations with
-missing checks gives `incomplete`, never an upgraded score. Mixed favorable and
-unfavorable observations gives `mixed`; all observed checks unfavorable gives
-`concerns`; none available gives `insufficient_evidence`. Routing can override
-these to `not_assessed` for an unsuitable framework. Missing-feature details are
-always preserved separately in the evidence assessment.
+All applicable observed checks supportive gives `supportive`. Supportive
+observations with missing or invalid checks gives `incomplete`, never an upgraded
+score. A structurally `not_meaningful` check is disclosed and excluded rather
+than treated as favorable or missing. Mixed favorable and unfavorable observations
+gives `mixed`; all applicable observed checks unfavorable gives `concerns`; no
+applicable observations gives `insufficient_evidence`. Routing can override these
+to `not_assessed` for an unsuitable framework. Unresolved and structurally
+nonmeaningful feature details are preserved separately in the evidence assessment.
 
 Negative free cash flow adds a research question about maintenance versus
 expansion investment and funding. It does not automatically lower quality or
@@ -115,9 +136,10 @@ Interest coverage below 1x is a high-priority observation, even when quality
 looks supportive. No distress probability is inferred.
 
 Evidence coverage is a mechanical description of annual data, freshness, and
-feature availability; it is not a numerical confidence probability. Quarterly
-trends, debt maturities, competitive durability, and peer comparisons remain
-manual research requirements.
+feature availability; it is not a numerical confidence probability. TTM trends
+are displayed separately and do not change annual assessments in this release.
+Debt maturities, competitive durability, and peer comparisons remain manual
+research requirements.
 
 ## Narrative and valuation
 
@@ -208,17 +230,19 @@ classification/thesis information, mismatched periods, quarter/annual mixing,
 stale prices, incompatible price adjustments, evidence references, independent
 valuation arithmetic, artifact integrity, and replay.
 
-## Remaining work before the first release gate
+## Remaining work after quarterly/TTM normalization
 
-1. SEC source ingestion, source-concept mappings, and reconciliation for an
-   actual 10–15-company watchlist. Synthetic fixtures do not validate real XBRL.
-2. Quarterly/YTD normalization and point-in-time TTM features, including fiscal
-   calendars, amendments, and company-specific disclosures.
-3. Sourced market CSV import and selection of an automated market-data adapter.
-4. Actual research reviews to revise provisional thresholds and report design;
+The Development cohort now validates annual and quarterly/TTM SEC normalization
+against 30 real companies. The 11 companies routed to this contract have no
+unresolved latest annual features; AMTM still has only four comparable issuer
+annual periods. Nine have all 16 latest TTM features, WSM has one structurally
+nonmeaningful ratio, and COKE retains one incompatible-definition gap.
+
+1. Sourced market CSV import and selection of an automated market-data adapter.
+2. Actual research reviews to revise provisional thresholds and report design;
    peer-relative comparisons only after defining appropriate groups.
-5. More complete valuation adjustments and narrative evidence where a business
+3. More complete valuation adjustments and narrative evidence where a business
    requires them. Add automated extraction only after manual workflow validation.
 
-The next implementation priority is source normalization and real-company
-reconciliation, not additional screening algorithms.
+The next implementation priority is market data, not additional screening
+algorithms.

@@ -255,6 +255,11 @@ class FeatureValue:
     input_ids: tuple[str, ...]
     explanation: str
     warnings: tuple[str, ...] = ()
+    period_basis: str = "annual"
+
+    def __post_init__(self) -> None:
+        if self.period_basis not in {"annual", "ttm"}:
+            raise ValueError("feature period basis must be annual or ttm")
 
 
 @dataclass(frozen=True)

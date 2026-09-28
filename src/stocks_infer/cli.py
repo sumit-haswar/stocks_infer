@@ -37,6 +37,22 @@ def build_parser(config: AppConfig) -> argparse.ArgumentParser:
     compare.add_argument("--before", type=Path, required=True)
     compare.add_argument("--after", type=Path, required=True)
 
+    sec_pilot = commands.add_parser("import-sec-pilot", help="Normalize reviewed SEC annual and quarterly concepts for development and difficult cases.")
+    sec_pilot.add_argument("--universe", type=Path, required=True)
+    sec_pilot.add_argument("--ticker-map", type=Path, required=True)
+    sec_pilot.add_argument("--company-facts", action="append", required=True, metavar="TICKER=PATH")
+    sec_pilot.add_argument("--as-of", type=date.fromisoformat, required=True)
+    sec_pilot.add_argument("--retrieved-on", type=date.fromisoformat, default=date.today())
+    sec_pilot.add_argument("--output", type=Path, required=True)
+
+    development = commands.add_parser("import-sec-development", help="Normalize all 30 Development companies from saved SEC Company Facts.")
+    development.add_argument("--universe", type=Path, required=True)
+    development.add_argument("--ticker-map", type=Path, required=True)
+    development.add_argument("--company-facts-dir", type=Path, required=True)
+    development.add_argument("--as-of", type=date.fromisoformat, required=True)
+    development.add_argument("--retrieved-on", type=date.fromisoformat, default=date.today())
+    development.add_argument("--output", type=Path, required=True)
+
     fixture = commands.add_parser(
         "screen-fixture",
         help="Run algorithms against a recorded canonical JSON dataset.",
@@ -91,6 +107,54 @@ def main(argv: Sequence[str] | None = None) -> int:
         from stocks_infer.research.artifacts import compare_runs
 
         print(json.dumps(compare_runs(arguments.before, arguments.after), indent=2))
+        return 0
+
+    if arguments.command == "import-sec-pilot":
+        from stocks_infer.research.io import write_json
+        from stocks_infer.research.sec_companyfacts import companyfacts_bundle, load_sec_payloads
+        from stocks_infer.research.universe import load_universe, match_sec_identifiers
+
+        if arguments.output.exists():
+            raise FileExistsError(f"normalized bundle already exists: {arguments.output}")
+        universe = load_universe(arguments.universe)
+        payloads = load_sec_payloads(arguments.company_facts)
+        ticker_map = json.loads(arguments.ticker_map.read_text(encoding="utf-8"))
+        identifiers = match_sec_identifiers(
+            tuple(company for company in universe if company.ticker in payloads), ticker_map
+        )
+        bundle = companyfacts_bundle(
+            universe, identifiers, payloads,
+            as_of=arguments.as_of, retrieved_on=arguments.retrieved_on,
+        )
+        arguments.output.parent.mkdir(parents=True, exist_ok=True)
+        write_json(arguments.output, bundle)
+        print(f"Normalized {len(bundle.companies)} companies and {len(bundle.facts)} SEC facts: {arguments.output}")
+        return 0
+
+    if arguments.command == "import-sec-development":
+        from stocks_infer.research.io import write_json
+        from stocks_infer.research.sec_companyfacts import companyfacts_bundle
+        from stocks_infer.research.universe import load_universe, match_sec_identifiers
+
+        if arguments.output.exists():
+            raise FileExistsError(f"normalized bundle already exists: {arguments.output}")
+        development_companies = tuple(
+            company for company in load_universe(arguments.universe)
+            if company.test_set == "Development"
+        )
+        ticker_map = json.loads(arguments.ticker_map.read_text(encoding="utf-8"))
+        identifiers = match_sec_identifiers(development_companies, ticker_map)
+        payloads = {
+            company.ticker: json.loads((arguments.company_facts_dir / f"{company.ticker}-companyfacts.json").read_text(encoding="utf-8"))
+            for company in development_companies
+        }
+        bundle = companyfacts_bundle(
+            development_companies, identifiers, payloads,
+            as_of=arguments.as_of, retrieved_on=arguments.retrieved_on,
+        )
+        arguments.output.parent.mkdir(parents=True, exist_ok=True)
+        write_json(arguments.output, bundle)
+        print(f"Normalized {len(bundle.companies)} Development companies and {len(bundle.facts)} SEC facts: {arguments.output}")
         return 0
 
     parser.error(f"unknown command: {arguments.command}")

@@ -88,9 +88,28 @@ poetry run stocks-infer research-compare \
 The comparison verifies artifact hashes before reporting changed evidence,
 market observations, thesis, valuation, or research-list membership.
 
-This milestone uses annual normalized JSON inputs. SEC ingestion, quarterly
-normalization, market CSV import, and reconciliation against a real watchlist
-remain release work. Assessment thresholds are explicit research heuristics,
-not validated investment signals. See the
+This milestone now imports annual, quarterly, YTD, and point-in-time TTM SEC
+evidence for the 30-company Development cohort. Market-data import and full
+narrative work remain release work. Assessment thresholds are explicit research
+heuristics, not validated investment signals. See the
 [implementation plan](docs/research-workflow-implementation-plan.md) and
 [framework contract and limitations](docs/established-business-research-contract.md).
+
+The supplied [100-company universe](company_universe/growth-value-company-universe.xlsx)
+has a [30-company SEC annual research run](docs/sec-development-run.md), building
+on the [two-company pilot](docs/sec-annual-pilot.md). A subsequent
+[filing reconciliation and narrative pass](docs/sec-development-reconciliation.md)
+resolves debt for the operating-framework cohort and records material context
+for anomalous signals. The follow-up
+[annual normalization completion](docs/sec-annual-normalization-completion.md)
+closes their remaining latest-period interest, share-count, and capex gaps and
+defines how structurally nonmeaningful ratios affect evidence coverage. The
+[quarterly and TTM normalization pass](docs/sec-quarterly-ttm-normalization.md)
+adds a separate recent-trend layer while preserving the annual assessment. The
+60 held-out Evaluation companies remain untouched.
+
+Raw SEC responses, normalized bundles, and generated research runs are local
+artifacts under the gitignored `data/` and `research_runs/` directories. They are
+not included in the repository. The real-company commands require the saved SEC
+Company Facts payloads; the committed synthetic fixtures keep automated tests and
+the core workflow reproducible from a fresh clone.
