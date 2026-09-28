@@ -47,12 +47,44 @@ class ResearchTests(unittest.TestCase):
         self.assertIn("evidence_needed", result.lists)
         self.assertNotIn("quality_at_potentially_attractive_price", result.lists)
 
+    def test_ttm_bridge_allows_one_week_fiscal_calendar_shift(self):
+        facts = (
+            FinancialFact(
+                "annual", "calendar-shift", "revenue", 100, "USD",
+                date(2024, 12, 31), date(2025, 2, 20), "annual-source", "reported",
+                "annual", date(2024, 1, 1),
+            ),
+            FinancialFact(
+                "prior-ytd", "calendar-shift", "revenue", 45, "USD",
+                date(2024, 6, 28), date(2024, 8, 1), "prior-source", "reported",
+                "ytd", date(2024, 1, 1),
+            ),
+            FinancialFact(
+                "current-ytd", "calendar-shift", "revenue", 55, "USD",
+                date(2025, 7, 4), date(2025, 8, 1), "current-source", "reported",
+                "ytd", date(2025, 1, 1),
+            ),
+        )
+        value, inputs = History(facts, "calendar-shift", date(2025, 8, 1)).ttm_bridge(
+            "revenue", date(2024, 6, 29), date(2025, 7, 4)
+        )
+        self.assertEqual(value, 110)
+        self.assertEqual({fact.fact_id for fact in inputs}, {"annual", "prior-ytd", "current-ytd"})
+
     def test_negative_equity_produces_nonmeaningful_return_not_poor_score(self):
         result = self.results["BUYBACK"]
         self.assertEqual(result.framework_status, "applicable")
         self.assertEqual(self.latest("BUYBACK", "pretax_return_on_capital").status, "not_meaningful")
-        self.assertEqual(result.assessments[0].status, "incomplete")
+        self.assertEqual(result.assessments[0].status, "supportive")
+        self.assertEqual(result.assessments[-1].status, "available_for_annual_review")
         self.assertTrue(any("book equity" in w for w in result.warnings))
+
+    def test_negative_equity_does_not_create_inflated_return_when_debt_is_large(self):
+        facts = tuple(replace(f, value=200_000_000) if f.security_id == "buyback" and f.metric == "debt" else f for f in self.bundle.facts)
+        features = build_features(History(facts, "buyback", AS_OF), "USD")
+        latest = next(f for f in reversed(features) if f.name == "pretax_return_on_capital")
+        self.assertEqual(latest.status, "not_meaningful")
+        self.assertIsNone(latest.value)
 
     def test_specialized_companies_remain_visible_without_wrong_yardstick(self):
         self.assertEqual(len(self.results), 10)
@@ -138,6 +170,13 @@ class ResearchTests(unittest.TestCase):
         self.assertEqual(latest["cash"].value, 20_000_000)
         self.assertEqual(latest["net_debt"].value, 20_000_000)
         self.assertEqual(latest["net_debt"].input_ids, ("STEADY-2025-cash", "STEADY-2025-debt"))
+
+    def test_fifty_three_week_comparison_warns_without_inventing_adjusted_growth(self):
+        facts = tuple(replace(f, period_start=date(2024, 12, 25)) if f.fact_id == "STEADY-2025-revenue" else f for f in self.bundle.facts)
+        features = build_features(History(facts, "steady", AS_OF), "USD")
+        latest = next(f for f in reversed(features) if f.name == "revenue_growth")
+        self.assertAlmostEqual(latest.value, .08)
+        self.assertTrue(any("not week-adjusted" in warning for warning in latest.warnings))
 
     def test_stale_price_does_not_enter_price_opportunity_queue(self):
         results = research_watchlist(self.bundle, date(2026, 10, 1))

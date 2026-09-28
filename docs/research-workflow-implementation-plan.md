@@ -63,6 +63,9 @@ remain visible with a routing explanation.
 
 ## 2. Historical data and provenance
 
+**Status:** Annual and quarterly/TTM SEC normalization is implemented for the 30
+Development companies. Dated market-data import remains open.
+
 Add models alongside existing snapshots:
 
 | Model | Purpose |

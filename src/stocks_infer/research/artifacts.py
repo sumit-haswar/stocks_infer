@@ -31,6 +31,19 @@ def _display(value: float | None, unit: str) -> str:
     return f"{value:,.2f} {unit}"
 
 
+def _selected_period_facts(facts, period_type: str):
+    grouped = {}
+    for fact in facts:
+        if fact.period_type != period_type:
+            continue
+        grouped.setdefault((fact.metric, fact.period_start, fact.period_end), []).append(fact)
+    selected = []
+    for candidates in grouped.values():
+        available = max(fact.available_at for fact in candidates)
+        selected.extend(fact for fact in candidates if fact.available_at == available)
+    return sorted(selected, key=lambda fact: (fact.period_end, fact.metric, fact.fact_id))
+
+
 def render_report(result: CompanyResearch, bundle: ResearchBundle, as_of: date) -> str:
     lines = [f"# {result.ticker} — {result.name}", "", f"Evaluation cutoff: {as_of} (end of day). Framework: `{FRAMEWORK_VERSION}`.", "", f"**Framework status:** {result.framework_status}", ""]
     lines.extend(f"- {reason}" for reason in result.framework_reasons)
@@ -41,13 +54,25 @@ def render_report(result: CompanyResearch, bundle: ResearchBundle, as_of: date) 
         lines.append("")
     lines += ["## Questions and limitations", ""]
     lines.extend(f"- {warning}" for warning in result.warnings)
-    lines += ["", "## Annual financial evidence", "", "Annual observations, not trailing-twelve-month or peer-relative scores.", "", "| Period | Feature | Value | Evidence status | Input fact IDs |", "|---|---|---:|---|---|"]
-    for f in result.features:
+    annual_features = [feature for feature in result.features if feature.period_basis == "annual"]
+    ttm_features = [feature for feature in result.features if feature.period_basis == "ttm"]
+    lines += ["", "## Annual financial evidence", "", "Annual observations, separate from TTM and peer-relative analysis.", "", "| Period | Feature | Value | Evidence status | Input fact IDs |", "|---|---|---:|---|---|"]
+    for f in annual_features:
         cells = (f.period_end, f.name, _display(f.value, f.unit), f.status, ", ".join(f.input_ids))
         lines.append("| " + " | ".join(_cell(c) for c in cells) + " |")
     lines += ["", "### Formulas and unavailable features", ""]
-    latest = max((f.period_end for f in result.features), default=None)
-    lines.extend(f"- **{f.name}:** {f.explanation}" for f in result.features if f.period_end == latest)
+    latest = max((f.period_end for f in annual_features), default=None)
+    lines.extend(f"- **{f.name}:** {f.explanation}" for f in annual_features if f.period_end == latest)
+    lines += ["", "## Trailing-twelve-month evidence", "", "Each period requires four contiguous normalized quarters. A flow may use annual plus current YTD minus prior comparable YTD when its discrete quarters are incomplete. TTM evidence is informational in this release and does not replace annual assessments.", "", "| Period ending | Feature | Value | Evidence status | Input fact IDs |", "|---|---|---:|---|---|"]
+    if ttm_features:
+        for f in ttm_features:
+            cells = (f.period_end, f.name, _display(f.value, f.unit), f.status, ", ".join(f.input_ids))
+            lines.append("| " + " | ".join(_cell(c) for c in cells) + " |")
+        latest_ttm = max(f.period_end for f in ttm_features)
+        lines += ["", "### TTM formulas and unavailable features", ""]
+        lines.extend(f"- **{f.name}:** {f.explanation}" for f in ttm_features if f.period_end == latest_ttm)
+    else:
+        lines.append("| — | — | — | missing | No complete four-quarter window |")
     lines += ["", "## Business thesis", ""]
     if result.thesis:
         t = result.thesis
@@ -79,6 +104,22 @@ def render_report(result: CompanyResearch, bundle: ResearchBundle, as_of: date) 
     for source in sorted(bundle.sources, key=lambda s: s.source_id):
         if source.source_id in source_ids:
             lines.append(f"- **{source.source_id}**: {source.title}; published {source.published_at}; retrieved {source.retrieved_at}; accession {source.accession or 'not supplied'}. {source.url}")
+    quarter_facts = _selected_period_facts(facts, "quarter")
+    quarter_ends = sorted({fact.period_end for fact in quarter_facts})[-12:]
+    lines += ["", "### Normalized discrete-quarter facts", "", "Reported quarters are retained directly; derived quarters identify their cumulative input fact IDs in the source concept.", "", "| Quarter | Metric | Value | Available | Fact / source concept |", "|---|---|---:|---|---|"]
+    for f in quarter_facts:
+        if f.period_end not in quarter_ends:
+            continue
+        cells = (f"{f.period_start} to {f.period_end}", f.metric, _display(f.value, f.unit), f.available_at, f"{f.fact_id} / {f.source_concept}")
+        lines.append("| " + " | ".join(_cell(c) for c in cells) + " |")
+    ytd_facts = _selected_period_facts(facts, "ytd")
+    latest_ytd_ends = sorted({fact.period_end for fact in ytd_facts})[-6:]
+    lines += ["", "### Reported year-to-date facts", "", "| YTD interval | Metric | Value | Available | Fact ID |", "|---|---|---:|---|---|"]
+    for f in ytd_facts:
+        if f.period_end not in latest_ytd_ends:
+            continue
+        cells = (f"{f.period_start} to {f.period_end}", f.metric, _display(f.value, f.unit), f.available_at, f.fact_id)
+        lines.append("| " + " | ".join(_cell(c) for c in cells) + " |")
     lines += ["", "### Reported facts", "", "| Fact ID | Metric | Value | Period | Available | Source / concept |", "|---|---|---:|---|---|---|"]
     for f in sorted(facts, key=lambda f: (f.period_end, f.metric, f.available_at, f.fact_id)):
         cells = (f.fact_id, f.metric, _display(f.value, f.unit), f"{f.period_start or 'instant'} to {f.period_end}", f.available_at, f"{f.source_id} / {f.source_concept}")
@@ -107,9 +148,9 @@ def write_research_run(input_path: Path, output_root: Path, as_of: date, run_id:
         staging = Path(temporary)
         write_json(staging / "input.json", bundle)
         write_json(staging / "research.json", results)
-        features = [(r.security_id, f.name, f.period_end, f.value, f.unit, f.status, json.dumps(f.input_ids), f.explanation) for r in results for f in r.features]
+        features = [(r.security_id, f.period_basis, f.name, f.period_end, f.value, f.unit, f.status, json.dumps(f.input_ids), f.explanation) for r in results for f in r.features]
         ParquetSnapshotStore()._write_rows(staging / "features.parquet", (
-            ("security_id", "VARCHAR"), ("feature", "VARCHAR"), ("period_end", "DATE"),
+            ("security_id", "VARCHAR"), ("period_basis", "VARCHAR"), ("feature", "VARCHAR"), ("period_end", "DATE"),
             ("value", "DOUBLE"), ("unit", "VARCHAR"), ("status", "VARCHAR"),
             ("input_ids_json", "VARCHAR"), ("explanation", "VARCHAR"),
         ), features)
@@ -125,7 +166,7 @@ def write_research_run(input_path: Path, output_root: Path, as_of: date, run_id:
             filename = f"company-{hashlib.sha256(result.security_id.encode()).hexdigest()[:16]}.md"
             (staging / filename).write_text(render_report(result, bundle, as_of), encoding="utf-8")
             links.append(f"- [{result.ticker} — {result.name}]({filename}): {', '.join(result.lists)}")
-        (staging / "README.md").write_text(f"# Research review — {as_of}\n\nAnnual recorded-data workflow. Research queues may overlap; rows are sorted by ticker, not investment merit.\n\n" + "\n".join(links) + "\n", encoding="utf-8")
+        (staging / "README.md").write_text(f"# Research review — {as_of}\n\nAnnual plus quarterly/TTM recorded-data workflow. TTM evidence is a separate trend layer; research queues may overlap and rows are sorted by ticker, not investment merit.\n\n" + "\n".join(links) + "\n", encoding="utf-8")
         with (staging / "comparison.csv").open("w", newline="", encoding="utf-8") as output:
             columns = ("security_id", "ticker", "framework_status", "quality", "growth", "resilience", "valuation", "evidence", "base_case_upside", "lists", "warnings")
             writer = csv.DictWriter(output, fieldnames=columns)
