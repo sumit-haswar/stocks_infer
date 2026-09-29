@@ -2,6 +2,7 @@
 
 Framework: `established-operating/0.2.0`
 Features: `annual-ttm-features/0.3.0`
+Market data: `dated-market-csv/0.1.0`
 Valuation: `fcff/0.1.0`
 
 This is the recorded-data research contract for the
@@ -66,6 +67,11 @@ editable example; its generator documents the ten scenarios.
 - Valuation prices must be unadjusted and supplied with shares on a consistent
   split basis, plus separate observation dates. The program rejects a declared
   adjusted-price series but cannot independently verify the supplied share basis.
+- Market observations preserve separate price and share-count sources. The
+  combined observation becomes usable only when both sources were published.
+  Unknown tickers, currencies that differ from the company record, non-HTTPS
+  sources, inconsistent source metadata, and duplicate observation identities
+  are rejected at import.
 
 Target six annual observations when possible: five display periods plus opening
 balances. Available shorter histories are shown, never filled with zeros.
@@ -199,12 +205,13 @@ not a validated margin of safety. CSV and report index order is ticker then
 security ID; there is no implied ranking by investment merit.
 
 Each run preserves normalized input JSON, all raw fact revisions in Parquet,
-derived features in Parquet, full structured research JSON, a CSV comparison,
-Markdown company reports, and a manifest with formula/framework/code fingerprints
-and artifact hashes. Historical reports only display evidence available at the
-cutoff; their replay input can retain future revisions. Existing run directories
-are never overwritten. Replay requires the corresponding code/formula version
-as well as saved inputs; the manifest fingerprints code but does not archive it.
+market observations in Parquet, derived features in Parquet, full structured
+research JSON, a CSV comparison, Markdown company reports, and a manifest with
+formula/framework/code fingerprints and artifact hashes. Historical reports only
+display evidence available at the cutoff; their replay input can retain future
+revisions. Existing run directories are never overwritten. Replay requires the
+corresponding code/formula version as well as saved inputs; the manifest
+fingerprints code but does not archive it.
 
 `research-compare` verifies the saved artifacts and reports changes in financial
 evidence, market data, thesis, valuations, research lists, and methodology.
@@ -230,7 +237,7 @@ classification/thesis information, mismatched periods, quarter/annual mixing,
 stale prices, incompatible price adjustments, evidence references, independent
 valuation arithmetic, artifact integrity, and replay.
 
-## Remaining work after quarterly/TTM normalization
+## Remaining work after the dated market-data importer
 
 The Development cohort now validates annual and quarterly/TTM SEC normalization
 against 30 real companies. The 11 companies routed to this contract have no
@@ -238,11 +245,13 @@ unresolved latest annual features; AMTM still has only four comparable issuer
 annual periods. Nine have all 16 latest TTM features, WSM has one structurally
 nonmeaningful ratio, and COKE retains one incompatible-definition gap.
 
-1. Sourced market CSV import and selection of an automated market-data adapter.
+1. Run the implemented Twelve Data plus SEC adapter to populate the 30-company
+   market CSV, import it, and reconcile price/share bases and resulting market
+   capitalizations against the cited sources.
 2. Actual research reviews to revise provisional thresholds and report design;
    peer-relative comparisons only after defining appropriate groups.
 3. More complete valuation adjustments and narrative evidence where a business
    requires them. Add automated extraction only after manual workflow validation.
 
-The next implementation priority is market data, not additional screening
-algorithms.
+The next implementation priority is a sourced Development-cohort market snapshot,
+not additional screening algorithms.

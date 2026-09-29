@@ -10,7 +10,7 @@ from pathlib import Path
 import re
 import tempfile
 
-from stocks_infer.research import FORMULA_VERSION, FRAMEWORK_VERSION
+from stocks_infer.research import FORMULA_VERSION, FRAMEWORK_VERSION, MARKET_DATA_VERSION
 from stocks_infer.research.engine import research_watchlist
 from stocks_infer.research.io import fingerprint, load_bundle, write_json
 from stocks_infer.research.models import CompanyResearch, ResearchBundle
@@ -83,7 +83,12 @@ def render_report(result: CompanyResearch, bundle: ResearchBundle, as_of: date) 
         lines += ["No thesis available at this cutoff. Record claims, counterarguments, milestones, and invalidation conditions.", ""]
     lines += ["## Valuation scenarios", ""]
     if result.market:
-        lines += [f"Price: {result.market.close:,.2f} {result.currency} on {result.market.price_date}; outstanding shares: {result.market.shares_outstanding:,.0f} dated {result.market.share_count_date}. Source: {result.market.source_id}.", ""]
+        lines += [
+            f"Price: {result.market.close:,.2f} {result.currency} on {result.market.price_date}; "
+            f"outstanding shares: {result.market.shares_outstanding:,.0f} dated {result.market.share_count_date}. "
+            f"Price source: {result.market.source_id}; share-count source: {result.market.effective_share_source_id}.",
+            "",
+        ]
     if result.valuation:
         lines += ["Values depend on researcher assumptions; no scenario probabilities are assigned.", "", "| Scenario | Value/share | Relative to price | Terminal share of enterprise value |", "|---|---:|---:|---:|"]
         for v in result.valuation:
@@ -98,6 +103,7 @@ def render_report(result: CompanyResearch, bundle: ResearchBundle, as_of: date) 
     source_ids = {f.source_id for f in facts}
     if result.market:
         source_ids.add(result.market.source_id)
+        source_ids.add(result.market.effective_share_source_id)
     if result.thesis:
         source_ids.update(s for c in result.thesis.claims for s in c.source_ids)
     lines += ["", "## Source documents", ""]
@@ -161,6 +167,18 @@ def write_research_run(input_path: Path, output_root: Path, as_of: date, run_id:
             ("period_end", "DATE"), ("period_type", "VARCHAR"), ("available_at", "DATE"),
             ("source_id", "VARCHAR"), ("source_concept", "VARCHAR"),
         ), facts)
+        market = [(
+            observation.security_id, observation.price_date, observation.available_at,
+            observation.close, observation.currency, observation.shares_outstanding,
+            observation.share_count_date, observation.adjustment,
+            observation.source_id, observation.effective_share_source_id,
+        ) for observation in bundle.prices]
+        ParquetSnapshotStore()._write_rows(staging / "market.parquet", (
+            ("security_id", "VARCHAR"), ("price_date", "DATE"), ("available_at", "DATE"),
+            ("close", "DOUBLE"), ("currency", "VARCHAR"), ("shares_outstanding", "DOUBLE"),
+            ("share_count_date", "DATE"), ("adjustment", "VARCHAR"),
+            ("price_source_id", "VARCHAR"), ("share_source_id", "VARCHAR"),
+        ), market)
         links = []
         for result in results:
             filename = f"company-{hashlib.sha256(result.security_id.encode()).hexdigest()[:16]}.md"
@@ -177,6 +195,7 @@ def write_research_run(input_path: Path, output_root: Path, as_of: date, run_id:
         write_json(staging / "manifest.json", {
             "schema_version": 1, "run_id": run_id, "as_of_date": as_of,
             "framework_version": FRAMEWORK_VERSION, "formula_version": FORMULA_VERSION,
+            "market_data_version": MARKET_DATA_VERSION,
             "valuation_version": "fcff/0.1.0", "code_fingerprint": code_hash,
             "input_fingerprint": input_hash, "input_snapshot": "input.json",
             "evaluated_count": len(results), "ordering": "ticker then security_id; no overall rank",
@@ -218,7 +237,7 @@ def compare_runs(before: Path, after: Path) -> dict:
             changes.append({"security_id": sid, "ticker": second["ticker"], "changes": categories})
     return {
         "before": old_manifest["run_id"], "after": new_manifest["run_id"],
-        "methodology_changed": any(old_manifest.get(k) != new_manifest.get(k) for k in ("framework_version", "formula_version", "valuation_version", "code_fingerprint")),
+        "methodology_changed": any(old_manifest.get(k) != new_manifest.get(k) for k in ("framework_version", "formula_version", "market_data_version", "valuation_version", "code_fingerprint")),
         "note": "Changed input/result categories, not a causal attribution of investment performance.",
         "companies": changes,
     }
