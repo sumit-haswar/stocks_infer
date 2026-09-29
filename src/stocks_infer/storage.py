@@ -97,6 +97,19 @@ class RawResponseCache:
     def __init__(self, layout: StorageLayout) -> None:
         self.layout = layout
 
+    def read_json(
+        self,
+        *,
+        provider: str,
+        retrieved_on: date,
+        key: str,
+    ) -> Any | None:
+        source = self._path(provider, retrieved_on, key)
+        if not source.is_file():
+            return None
+        with gzip.open(source, "rt", encoding="utf-8") as input_file:
+            return json.load(input_file)
+
     def write_json(
         self,
         *,
@@ -105,14 +118,18 @@ class RawResponseCache:
         key: str,
         payload: Mapping[str, Any] | Sequence[Any],
     ) -> Path:
-        directory = self.layout.raw_directory(retrieved_on, provider)
-        destination = directory / f"{_safe_component(key)}.json.gz"
+        destination = self._path(provider, retrieved_on, key)
+        directory = destination.parent
         directory.mkdir(parents=True, exist_ok=True)
         temporary = destination.with_suffix(".json.gz.tmp")
         with gzip.open(temporary, "wt", encoding="utf-8") as output_file:
             json.dump(payload, output_file, sort_keys=True, separators=(",", ":"))
         temporary.replace(destination)
         return destination
+
+    def _path(self, provider: str, retrieved_on: date, key: str) -> Path:
+        directory = self.layout.raw_directory(retrieved_on, provider)
+        return directory / f"{_safe_component(key)}.json.gz"
 
 
 class ParquetSnapshotStore:

@@ -122,6 +122,8 @@ poetry run stocks-infer research \
   --run-id sec-development-quarterly-ttm-2026-09-20
 ```
 
-The next implementation step is dated market-data import. Narrative thesis work
-can then use annual evidence and the TTM trend layer together without collapsing
+The provider-neutral [dated market-data CSV importer](market-data-import.md) and
+the first Twelve Data plus SEC adapter are now implemented. The next data task is
+to run and reconcile the 30-company market snapshot. Narrative thesis work can
+then use annual evidence and the TTM trend layer together without collapsing
 them into one score.

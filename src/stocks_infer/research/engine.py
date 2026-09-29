@@ -197,7 +197,7 @@ def research_company(bundle: ResearchBundle, company: Company, as_of: date) -> C
             try:
                 valuation = value_scenario(scenario, revenue=value("revenue"), net_debt=value("net_debt"), shares=market.shares_outstanding, price=market.close)
                 valuation["input_ids"] = sorted(set(latest["revenue"].input_ids + latest["net_debt"].input_ids))
-                valuation["market_source_id"] = market.source_id
+                valuation["market_source_ids"] = sorted({market.source_id, market.effective_share_source_id})
                 valuations.append(valuation)
             except ValueError as error:
                 warnings.append(f"{name} valuation unavailable: {error}")

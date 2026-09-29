@@ -72,7 +72,8 @@ poetry run stocks-infer research \
 
 Open `research_runs/my-first-research/README.md` for the company reports. The directory also
 contains `comparison.csv`, `research.json`, the replayable `input.json`,
-`facts.parquet`, `features.parquet`, and a versioned, fingerprinted manifest.
+`facts.parquet`, `features.parquet`, `market.parquet`, and a versioned,
+fingerprinted manifest.
 Existing runs cannot be overwritten; choose a new run ID when repeating a review.
 
 To replay a saved input or compare two reviews:
@@ -89,8 +90,9 @@ The comparison verifies artifact hashes before reporting changed evidence,
 market observations, thesis, valuation, or research-list membership.
 
 This milestone now imports annual, quarterly, YTD, and point-in-time TTM SEC
-evidence for the 30-company Development cohort. Market-data import and full
-narrative work remain release work. Assessment thresholds are explicit research
+evidence for the 30-company Development cohort and supports a strict, sourced
+dated market-data CSV import. Full narrative work remains release work.
+Assessment thresholds are explicit research
 heuristics, not validated investment signals. See the
 [implementation plan](docs/research-workflow-implementation-plan.md) and
 [framework contract and limitations](docs/established-business-research-contract.md).
@@ -106,7 +108,14 @@ closes their remaining latest-period interest, share-count, and capex gaps and
 defines how structurally nonmeaningful ratios affect evidence coverage. The
 [quarterly and TTM normalization pass](docs/sec-quarterly-ttm-normalization.md)
 adds a separate recent-trend layer while preserving the annual assessment. The
-60 held-out Evaluation companies remain untouched.
+[dated market-data import contract](docs/market-data-import.md) adds unadjusted
+closing prices and split-consistent share counts with separate source provenance.
+The [Twelve Data coverage trial](docs/twelve-data-coverage-trial.md) validates
+the complete Development cohort and records the symbol and listing-boundary
+controls. The resulting Twelve Data plus SEC adapter now emits the strict market
+CSV from unadjusted closes and dated filing share counts while retaining separate
+source provenance.
+The 60 held-out Evaluation companies remain untouched.
 
 Raw SEC responses, normalized bundles, and generated research runs are local
 artifacts under the gitignored `data/` and `research_runs/` directories. They are

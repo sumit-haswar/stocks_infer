@@ -64,7 +64,11 @@ remain visible with a routing explanation.
 ## 2. Historical data and provenance
 
 **Status:** Annual and quarterly/TTM SEC normalization is implemented for the 30
-Development companies. Dated market-data import remains open.
+Development companies. The provider-neutral dated market-data CSV boundary is
+implemented. A Twelve Data coverage trial resolved all 30 tickers and approved
+it as the provisional price source with explicit symbol, listing-boundary, and
+volume-quality controls. The first Twelve Data plus SEC adapter is implemented;
+populating and reconciling the sourced Development-cohort snapshot remain open.
 
 Add models alongside existing snapshots:
 
@@ -83,9 +87,12 @@ Use SEC filings as the initial fundamentals source. SEC submissions and extracte
 XBRL are available through JSON APIs:
 [SEC developer resources](https://www.sec.gov/about/developer-resources).
 
-Implement a sourced, dated market-data import contract first. Select an automated
-price adapter after checking coverage and licensing. A CSV import can support
-the workflow without requiring a paid subscription.
+Implement a sourced, dated market-data import contract first. The subsequent
+[Twelve Data coverage trial](twelve-data-coverage-trial.md) checks the complete
+Development cohort and defines the controls required by an automated price
+adapter. The implemented adapter emits that CSV contract from unadjusted Twelve
+Data closes and dated SEC outstanding-share evidence, without coupling valuation
+logic to either provider.
 
 Rules:
 

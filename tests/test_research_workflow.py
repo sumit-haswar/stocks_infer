@@ -248,10 +248,16 @@ class ResearchArtifactTests(unittest.TestCase):
             manifest, results = read_verified_run(first)
             self.assertEqual(manifest["evaluated_count"], 10)
             self.assertEqual(len(list(first.glob("company-*.md"))), 10)
+            self.assertTrue((first / "market.parquet").is_file())
             import duckdb
             with duckdb.connect() as connection:
                 rows = connection.execute("SELECT status, value FROM read_parquet(?) WHERE security_id='missing' AND feature='cash_conversion' ORDER BY period_end DESC LIMIT 1", [str(first / "features.parquet")]).fetchone()
+                market_sources = connection.execute(
+                    "SELECT price_source_id, share_source_id FROM read_parquet(?) WHERE security_id='steady'",
+                    [str(first / "market.parquet")],
+                ).fetchone()
             self.assertEqual(rows, ("missing", None))
+            self.assertEqual(market_sources, ("synthetic-price", "synthetic-price"))
             replay = write_research_run(first / "input.json", root, AS_OF, "replay")
             self.assertEqual(results, read_verified_run(replay)[1])
             self.assertEqual(compare_runs(first, replay)["companies"], [])

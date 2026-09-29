@@ -86,6 +86,7 @@ class MarketObservation:
     source_id: str
     share_count_date: date
     adjustment: str = "unadjusted"
+    share_source_id: str | None = None
 
     def __post_init__(self) -> None:
         finite(self.close, "close")
@@ -96,6 +97,10 @@ class MarketObservation:
             raise ValueError("invalid market observation dates")
         if self.adjustment != "unadjusted":
             raise ValueError("valuation requires an unadjusted price and matching share basis")
+
+    @property
+    def effective_share_source_id(self) -> str:
+        return self.share_source_id or self.source_id
 
 
 @dataclass(frozen=True)
@@ -199,14 +204,23 @@ class ResearchBundle:
                 raise ValueError(f"duplicate {key}")
         companies = {item.security_id: item for item in self.companies}
         sources = {item.source_id: item for item in self.sources}
-        for item in (*self.facts, *self.prices):
+        for item in self.facts:
             if item.security_id not in companies or item.source_id not in sources:
                 raise ValueError("unknown security or source reference")
             if sources[item.source_id].published_at > item.available_at:
                 raise ValueError("value cannot be available before its source publication")
             expected = companies[item.security_id].currency
-            unit = item.unit if isinstance(item, FinancialFact) else item.currency
-            if unit != ("shares" if isinstance(item, FinancialFact) and item.metric == "diluted_shares" else expected):
+            if item.unit != ("shares" if item.metric == "diluted_shares" else expected):
+                raise ValueError("currency/unit mismatch; convert explicitly before importing")
+        for item in self.prices:
+            if item.security_id not in companies:
+                raise ValueError("unknown security or source reference")
+            source_ids = (item.source_id, item.effective_share_source_id)
+            if any(source_id not in sources for source_id in source_ids):
+                raise ValueError("unknown security or source reference")
+            if any(sources[source_id].published_at > item.available_at for source_id in source_ids):
+                raise ValueError("value cannot be available before its source publication")
+            if item.currency != companies[item.security_id].currency:
                 raise ValueError("currency/unit mismatch; convert explicitly before importing")
         thesis_keys: set[tuple[str, str]] = set()
         thesis_dates: set[tuple[str, date]] = set()

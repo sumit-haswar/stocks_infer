@@ -37,6 +37,45 @@ def build_parser(config: AppConfig) -> argparse.ArgumentParser:
     compare.add_argument("--before", type=Path, required=True)
     compare.add_argument("--after", type=Path, required=True)
 
+    market = commands.add_parser("import-market-csv", help="Add sourced, dated market observations to a research bundle.")
+    market.add_argument("--input", type=Path, required=True, help="Existing research bundle JSON.")
+    market.add_argument("--market-csv", type=Path, required=True, help="Strict market-observation CSV.")
+    market.add_argument("--output", type=Path, required=True, help="New bundle JSON; existing files are never overwritten.")
+    market.add_argument("--require-all", action="store_true", help="Require at least one imported row for every company in the bundle.")
+
+    twelve_data = commands.add_parser(
+        "probe-twelve-data",
+        help="Test Twelve Data daily-price coverage for every company in a research bundle.",
+    )
+    twelve_data.add_argument("--input", type=Path, required=True, help="Existing research bundle JSON.")
+    twelve_data.add_argument("--output", type=Path, required=True, help="New coverage-report CSV.")
+    twelve_data.add_argument("--start-date", type=date.fromisoformat, default=date(2007, 1, 1))
+    twelve_data.add_argument("--end-date", type=date.fromisoformat, default=date.today())
+    twelve_data.add_argument(
+        "--requests-per-minute",
+        type=int,
+        default=8,
+        help="Throttle to the account plan; Twelve Data Basic currently allows 8.",
+    )
+
+    twelve_market = commands.add_parser(
+        "build-twelve-data-market",
+        help="Build a strict market CSV from Twelve Data closes and SEC shares.",
+    )
+    twelve_market.add_argument("--input", type=Path, required=True, help="Existing SEC-normalized research bundle JSON.")
+    twelve_market.add_argument("--company-facts-dir", type=Path, required=True, help="Directory containing TICKER-companyfacts.json files.")
+    twelve_market.add_argument("--output", type=Path, required=True, help="New strict market-observation CSV.")
+    twelve_market.add_argument("--as-of", type=date.fromisoformat, required=True, help="Latest date prices and filings may use.")
+    twelve_market.add_argument("--retrieved-on", type=date.fromisoformat, default=date.today())
+    twelve_market.add_argument("--raw-root", type=Path, default=Path("."), help="Root beneath which data/raw stores credential-free responses.")
+    twelve_market.add_argument("--lookback-days", type=int, default=14)
+    twelve_market.add_argument(
+        "--requests-per-minute",
+        type=int,
+        default=8,
+        help="Throttle to the account plan; Twelve Data Basic currently allows 8.",
+    )
+
     sec_pilot = commands.add_parser("import-sec-pilot", help="Normalize reviewed SEC annual and quarterly concepts for development and difficult cases.")
     sec_pilot.add_argument("--universe", type=Path, required=True)
     sec_pilot.add_argument("--ticker-map", type=Path, required=True)
@@ -107,6 +146,120 @@ def main(argv: Sequence[str] | None = None) -> int:
         from stocks_infer.research.artifacts import compare_runs
 
         print(json.dumps(compare_runs(arguments.before, arguments.after), indent=2))
+        return 0
+
+    if arguments.command == "import-market-csv":
+        from stocks_infer.research.io import load_bundle, write_json
+        from stocks_infer.research.market_csv import import_market_csv
+
+        if arguments.output.exists():
+            raise FileExistsError(f"market-enriched bundle already exists: {arguments.output}")
+        bundle = import_market_csv(
+            load_bundle(arguments.input),
+            arguments.market_csv,
+            require_all=arguments.require_all,
+        )
+        arguments.output.parent.mkdir(parents=True, exist_ok=True)
+        write_json(arguments.output, bundle)
+        covered = len({price.security_id for price in bundle.prices})
+        print(
+            f"Bundle now contains {len(bundle.prices)} market observations covering "
+            f"{covered}/{len(bundle.companies)} companies: {arguments.output}"
+        )
+        return 0
+
+    if arguments.command == "probe-twelve-data":
+        from stocks_infer.research.io import load_bundle
+        from stocks_infer.research.twelve_data import (
+            TWELVE_DATA_API_KEY_ENV,
+            TwelveDataClient,
+            load_twelve_data_api_key,
+            probe_twelve_data_coverage,
+            write_twelve_data_coverage,
+        )
+
+        api_key = load_twelve_data_api_key()
+        if not api_key:
+            raise ValueError(
+                f"set {TWELVE_DATA_API_KEY_ENV} to a personal Twelve Data API key"
+            )
+        if arguments.output.exists() or arguments.output.with_suffix(".summary.json").exists():
+            raise FileExistsError(f"Twelve Data coverage output already exists: {arguments.output}")
+        results = probe_twelve_data_coverage(
+            load_bundle(arguments.input),
+            TwelveDataClient(
+                api_key,
+                requests_per_minute=arguments.requests_per_minute,
+            ),
+            start_date=arguments.start_date,
+            end_date=arguments.end_date,
+            on_result=lambda index, total, result: print(
+                f"[{index}/{total}] {result.ticker}: {result.status}"
+                + (f" ({result.issues})" if result.issues else "")
+            ),
+        )
+        summary_path = write_twelve_data_coverage(
+            arguments.output, results, retrieved_at=date.today()
+        )
+        counts = {
+            status: sum(result.status == status for result in results)
+            for status in ("covered", "warning", "error")
+        }
+        print(f"Coverage report: {arguments.output}")
+        print(f"Coverage summary: {summary_path}")
+        print(
+            f"Results: {counts['covered']} covered, {counts['warning']} warnings, "
+            f"{counts['error']} errors"
+        )
+        return 0
+
+    if arguments.command == "build-twelve-data-market":
+        from stocks_infer.research.io import load_bundle
+        from stocks_infer.research.twelve_data import (
+            TWELVE_DATA_API_KEY_ENV,
+            TwelveDataClient,
+            load_twelve_data_api_key,
+        )
+        from stocks_infer.research.twelve_data_adapter import (
+            build_twelve_data_market_rows,
+            load_companyfacts_directory,
+            write_twelve_data_market_csv,
+        )
+        from stocks_infer.storage import RawResponseCache, StorageLayout
+
+        if arguments.output.exists():
+            raise FileExistsError(
+                f"Twelve Data market CSV already exists: {arguments.output}"
+            )
+        api_key = load_twelve_data_api_key()
+        if not api_key:
+            raise ValueError(
+                f"set {TWELVE_DATA_API_KEY_ENV} to a personal Twelve Data API key"
+            )
+        bundle = load_bundle(arguments.input)
+        payloads = load_companyfacts_directory(
+            arguments.company_facts_dir, bundle.companies
+        )
+        rows = build_twelve_data_market_rows(
+            bundle,
+            payloads,
+            TwelveDataClient(
+                api_key,
+                requests_per_minute=arguments.requests_per_minute,
+            ),
+            as_of=arguments.as_of,
+            retrieved_on=arguments.retrieved_on,
+            raw_cache=RawResponseCache(StorageLayout(arguments.raw_root)),
+            lookback_days=arguments.lookback_days,
+            on_result=lambda index, total, ticker, price_date: print(
+                f"[{index}/{total}] {ticker}: {price_date.isoformat()}"
+            ),
+        )
+        write_twelve_data_market_csv(arguments.output, rows)
+        print(
+            f"Market CSV: {arguments.output} ({len(rows)} companies; "
+            "Twelve Data prices plus SEC outstanding shares)"
+        )
         return 0
 
     if arguments.command == "import-sec-pilot":
